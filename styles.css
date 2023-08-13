@@ -1,0 +1,27 @@
+body {
+    background-image: url("images/stars.gif");
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15%;
+    color: white;
+    font-family: "Comic Sans MS", "Comic Sans", serif;
+}
+
+a {
+    color: lavender;
+}
+
+a:visited {
+    color: lightgreen;
+}
+
+.links {
+    column-count: 2;
+    column-fill: balance;
+  }
+
+  .links a {
+    margin: 0;
+  }
