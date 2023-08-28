@@ -10,10 +10,6 @@ body {
 }
 
 a {
-    color: lavender;
-}
-
-a:visited {
     color: lightgreen;
 }
 
