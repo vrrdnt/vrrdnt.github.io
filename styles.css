@@ -1,23 +1,40 @@
 body {
-    background-image: url("images/stars.gif");
+    overflow:hidden;
+}
+
+canvas {
+    background:black;
+    position:fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+.bodyText {
+    /* position:absolute; */
     display: flex;
+    z-index:0;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     margin-top: 15%;
-    color: white;
+    color: hsla(0, 0%, 100%, 0.7);
     font-family: "Comic Sans MS", "Comic Sans", serif;
-}
 
-a {
-    color: lightgreen;
+    opacity: 0;
+    -webkit-transition: all 1s ease-in-out;
+    -moz-transition: all 1s ease-in-out;
+    -ms-transition: all 1s ease-in-out;
+    -o-transition: all 1s ease-in-out;
+    transition: all 1s ease-in-out;
 }
 
 .links {
     column-count: 2;
     column-fill: balance;
-  }
+}
 
-  .links a {
+.links a {
     margin: 0;
-  }
+    color: hsla(116, 58%, 60%, .7);
+}
