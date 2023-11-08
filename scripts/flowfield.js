@@ -4,12 +4,27 @@ let ch = (canvas.height = window.innerHeight);
 let rid = null; // request animation id
 ctx.fillStyle = "hsla(0, 5%, 5%, .025)";
 
-const body = document.getElementsByClassName("bodyText");
-console.log(body.style);
+const gui = new dat.GUI();
+gui.autoPlace = true;
+
+let x_mod = {x_mod: randomIntFromInterval(-3, 3) / 100};
+let x_modController = gui.add(x_mod, 'x_mod', -0.03, 0.03);
+
+let y_mod = {y_mod: randomIntFromInterval(-3, 3) / 100};
+let y_modController = gui.add(y_mod, 'y_mod', -0.03, 0.03);
+
+y_modController.onFinishChange(Init);
+x_modController.onFinishChange(Init);
 
 $("#canvas").on("click", function () {
-    if ($('.bodyText').css('opacity') == 0) $('.bodyText').css('opacity', 1);
-    else $('.bodyText').css('opacity', 0);
+    if ($('.bodyText').css('opacity') == 1) {
+        $('.bodyText').css('opacity', 0);
+        gui.close();
+    } 
+    else {
+        $('.bodyText').css('opacity', 1);
+        gui.open();
+    }
 });
 
 class Particle {
@@ -87,12 +102,10 @@ function getAngle(x, y, x_mod, y_mod) {
 }
 
 function getFlowField(rows, cols) {
-    let x_mod = randomIntFromInterval(-3, 3) / 100;
-    let y_mod = randomIntFromInterval(-3, 3) / 100;
     for (y = 0; y <= rows; y++) {
         for (x = 0; x < cols; x++) {
             let index = x + y * cols;
-            let a = getAngle(x * size, y * size, x_mod, y_mod);
+            let a = getAngle(x * size, y * size, x_mod.x_mod, y_mod.y_mod);
             flowField[index] = a;
         }
     }

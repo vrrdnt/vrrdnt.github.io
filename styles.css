@@ -21,7 +21,7 @@ canvas {
     color: hsla(0, 0%, 100%, 0.7);
     font-family: 'Source Code Pro', monospace;
 
-    opacity: 0;
+    opacity: 1;
     -webkit-transition: all 1s ease-in-out;
     -moz-transition: all 1s ease-in-out;
     -ms-transition: all 1s ease-in-out;
@@ -37,4 +37,20 @@ canvas {
 .links a {
     margin: 0;
     color: hsla(116, 58%, 60%, .7);
+}
+
+.dg .c .slider-fg {
+    background: hsla(116, 58%, 60%, .7) !important;
+}
+
+.dg .cr.number input[type=text] {
+    color: hsla(116, 58%, 60%, .7) !important;
+}
+
+.dg .cr.number {
+    border-left: 3px solid hsla(116, 58%, 60%, .7) !important;
+}
+
+.dg.main .close-button {
+    display: none;
 }
