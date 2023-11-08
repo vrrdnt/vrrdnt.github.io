@@ -18,7 +18,7 @@ canvas {
     justify-content: center;
     align-items: center;
     margin-top: 15%;
-    color: hsla(0, 0%, 100%, 0.7);
+    color: hsla(0, 0%, 100%, 1);
     font-family: 'Source Code Pro', monospace;
 
     opacity: 1;
@@ -29,14 +29,14 @@ canvas {
     transition: all 1s ease-in-out;
 }
 
-.links {
+/* .links {
     column-count: 2;
     column-fill: balance;
-}
+} */
 
 .links a {
     margin: 0;
-    color: hsla(116, 58%, 60%, .7);
+    color: hsla(116, 58%, 60%, 1);
 }
 
 .dg .c .slider-fg {
@@ -53,4 +53,26 @@ canvas {
 
 .dg.main .close-button {
     display: none;
+}
+
+.dg.main {
+    opacity: 1;
+    -webkit-transition: all 2s ease-in-out;
+    -moz-transition: all 2s ease-in-out;
+    -ms-transition: all 2s ease-in-out;
+    -o-transition: all 2s ease-in-out;
+    transition: all 2s ease-in-out;
+}
+
+.fa-brands {
+    color: hsla(116, 58%, 60%, 1);
+}
+
+.fa-brands:hover {
+    -webkit-transition: all 0.25s ease-in-out;
+    -moz-transition: all 0.25s ease-in-out;
+    -ms-transition: all 0.25s ease-in-out;
+    -o-transition: all 0.25s ease-in-out;
+    transition: all 0.25s ease-in-out;
+    color: white;
 }

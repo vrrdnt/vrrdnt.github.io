@@ -19,11 +19,14 @@ x_modController.onFinishChange(Init);
 $("#canvas").on("click", function () {
     if ($('.bodyText').css('opacity') == 1) {
         $('.bodyText').css('opacity', 0);
-        gui.close();
     } 
     else {
         $('.bodyText').css('opacity', 1);
-        gui.open();
+    }
+    if ($('.dg.main').css('opacity') == 1) {
+        $('.dg.main').css('opacity', 0);
+    } else {
+        $('.dg.main').css('opacity', 1);
     }
 });
 
@@ -33,7 +36,7 @@ class Particle {
         this.vel = { x: 0, y: 0 };
         this.base = (1 + Math.random()) * 3;
         this.life = randomIntFromInterval(3, 20);
-        this.color = Math.random() < .1 ? "hsla(116, 58%, 60%, 1)" : "hsla(0,0%,30%,.7)"
+        this.color = Math.random() < .2 ? "hsla(116, 58%, 60%, 1)" : "hsla(0,0%,30%,.7)"
         this.history = [];
     }
 
