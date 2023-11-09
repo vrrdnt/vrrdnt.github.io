@@ -5,7 +5,6 @@ let rid = null; // request animation id
 ctx.fillStyle = "hsla(0, 5%, 5%, .025)";
 
 const gui = new dat.GUI();
-gui.autoPlace = true;
 
 let x_mod = {x_mod: randomIntFromInterval(-3, 3) / 100};
 let x_modController = gui.add(x_mod, 'x_mod', -0.03, 0.03);
@@ -13,8 +12,43 @@ let x_modController = gui.add(x_mod, 'x_mod', -0.03, 0.03);
 let y_mod = {y_mod: randomIntFromInterval(-3, 3) / 100};
 let y_modController = gui.add(y_mod, 'y_mod', -0.03, 0.03);
 
-y_modController.onFinishChange(Init);
-x_modController.onFinishChange(Init);
+let auto_flow = {auto_flow: true};
+let autoFlowController = gui.add(auto_flow, 'auto_flow')
+
+y_modController.onFinishChange(function () {
+    Init();
+    y_modController.updateDisplay();
+});
+
+x_modController.onFinishChange(function () {
+    Init();
+    x_modController.updateDisplay();
+});
+
+autoFlowController.onFinishChange(function () {
+    if (!autoFlowController.getValue()) { return stopAutoFlow(); }
+    autoFlow();
+});
+
+let intervalID;
+
+function randomizeFlowAndRedraw() {
+    x_modController.setValue(randomIntFromInterval(-3, 3) / 100);
+    y_modController.setValue(randomIntFromInterval(-3, 3) / 100);
+    Init();
+};
+
+function autoFlow() {
+    if (!intervalID) {
+        return intervalID = setInterval(randomizeFlowAndRedraw, 2000);
+    }
+    stopAutoFlow();
+};
+
+function stopAutoFlow() {
+    clearInterval(intervalID);
+    intervalID = null;
+}
 
 $("#canvas").on("click", function () {
     if ($('.bodyText').css('opacity') == 1) {
@@ -30,13 +64,26 @@ $("#canvas").on("click", function () {
     }
 });
 
+let pallette = {
+    color: '#66d45e'
+}
+
+let colorController = gui.addColor(pallette, 'color');
+colorController.onChange(function () {
+    let color = colorController.getValue()
+    pallette.color = color;
+    $('.fa-brands').css('color', color);
+    $('.dg .c .slider-fg').css('background', `${color} !important`);
+    Init()
+})
+
 class Particle {
     constructor() {
         this.pos = { x: Math.random() * cw, y: Math.random() * ch };
         this.vel = { x: 0, y: 0 };
         this.base = (1 + Math.random()) * 3;
         this.life = randomIntFromInterval(3, 20);
-        this.color = Math.random() < .2 ? "hsla(116, 58%, 60%, 1)" : "hsla(0,0%,30%,.7)"
+        this.color = Math.random() < .2 ? colorController.getValue() : "hsla(0,0%,30%,.7)"
         this.history = [];
     }
 
@@ -149,11 +196,18 @@ function Init() {
         window.cancelAnimationFrame(rid);
         rid = null;
     }
+
+    particles = [];
+    for (let i = 0; i < 1000; i++) {
+        particles.push(new Particle());
+    }
+
     frame();
 }
 
 window.setTimeout(function () {
     Init();
+    if (auto_flow.auto_flow) { autoFlow(); }
 
     window.addEventListener("resize", Init, false);
 }, 15);

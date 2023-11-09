@@ -40,28 +40,29 @@ canvas {
 }
 
 .dg .c .slider-fg {
-    background: hsla(116, 58%, 60%, .7) !important;
+    background: hsla(116, 58%, 60%, 1);
 }
 
 .dg .cr.number input[type=text] {
-    color: hsla(116, 58%, 60%, .7) !important;
+    color: rgb(255, 255, 255) !important;
 }
 
 .dg .cr.number {
-    border-left: 3px solid hsla(116, 58%, 60%, .7) !important;
+    border-left: 3px solid rgb(255, 255, 255) !important;
 }
 
 .dg.main .close-button {
     display: none;
 }
 
-.dg.main {
+.dg {
     opacity: 1;
-    -webkit-transition: all 2s ease-in-out;
-    -moz-transition: all 2s ease-in-out;
-    -ms-transition: all 2s ease-in-out;
-    -o-transition: all 2s ease-in-out;
-    transition: all 2s ease-in-out;
+    /* text-align: center; */
+    -webkit-transition: all 4s ease-in-out;
+    -moz-transition: all 4s ease-in-out;
+    -ms-transition: all 4s ease-in-out;
+    -o-transition: all 4s ease-in-out;
+    transition: all 4s ease-in-out;
 }
 
 .fa-brands {
