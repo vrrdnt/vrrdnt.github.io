@@ -4,48 +4,83 @@ let ch = (canvas.height = window.innerHeight);
 let rid = null; // request animation id
 ctx.fillStyle = "hsla(0, 5%, 5%, .025)";
 
-const gui = new dat.GUI();
+let wait;
+function resizedw(){
+    Init();
+}
+window.onresize = function() {
+    clearTimeout(wait);
+    wait = setTimeout(function() {
+        resizedw();
+    }, 100);
+};
+
+const gui = new dat.GUI( { autoPlace: false } );
 
 let x_mod = {x_mod: randomIntFromInterval(-3, 3) / 100};
-let x_modController = gui.add(x_mod, 'x_mod', -0.03, 0.03);
+let x_modController = gui.add(x_mod, 'x_mod', -0.06, 0.06);
 
 let y_mod = {y_mod: randomIntFromInterval(-3, 3) / 100};
-let y_modController = gui.add(y_mod, 'y_mod', -0.03, 0.03);
+let y_modController = gui.add(y_mod, 'y_mod', -0.06, 0.06);
+
+gui.domElement.id = 'canvas';
+let customContainer = $('.moveGUI').append($(gui.domElement));
 
 let auto_flow = {auto_flow: true};
 let autoFlowController = gui.add(auto_flow, 'auto_flow')
 
-y_modController.onFinishChange(function () {
+let trig_choice = {trig_choice: 'sin'};
+let trig_choiceController = gui.add(trig_choice, 'trig_choice', ['sin', 'cos', 'tan']);
+
+function calculateWithTrigState(angle) {
+    let choice = trig_choiceController.getValue();
+    switch (choice) {
+        case 'sin':
+            return Math.sin(angle);
+        case 'cos':
+            return Math.cos(angle);
+        default:
+            return Math.tan(angle);
+    }
+}
+
+y_modController.onChange(function () {
     Init();
     y_modController.updateDisplay();
 });
 
-x_modController.onFinishChange(function () {
+x_modController.onChange(function () {
     Init();
     x_modController.updateDisplay();
 });
 
 autoFlowController.onFinishChange(function () {
-    if (!autoFlowController.getValue()) { return stopAutoFlow(); }
-    autoFlow();
+    if (!autoFlowController.getValue()) { return stopRandomFlow(); }
+    randomizeFlow();
 });
+
+trig_choiceController.onChange(function () {
+    Init();
+    trig_choiceController.updateDisplay();
+})
 
 let intervalID;
 
 function randomizeFlowAndRedraw() {
     x_modController.setValue(randomIntFromInterval(-3, 3) / 100);
     y_modController.setValue(randomIntFromInterval(-3, 3) / 100);
+    console.log()
     Init();
 };
 
-function autoFlow() {
+function randomizeFlow() {
     if (!intervalID) {
-        return intervalID = setInterval(randomizeFlowAndRedraw, 2000);
+        return intervalID = setInterval(randomizeFlowAndRedraw, 1000);
     }
-    stopAutoFlow();
+    stopRandomFlow();
 };
 
-function stopAutoFlow() {
+function stopRandomFlow() {
     clearInterval(intervalID);
     intervalID = null;
 }
@@ -57,12 +92,15 @@ $("#canvas").on("click", function () {
     else {
         $('.bodyText').css('opacity', 1);
     }
-    if ($('.dg.main').css('opacity') == 1) {
-        $('.dg.main').css('opacity', 0);
-    } else {
-        $('.dg.main').css('opacity', 1);
-    }
 });
+
+function toggleMenu() {
+    if ($('.moveGUI').css('opacity') == 1) {
+        $('.moveGUI').css('opacity', 0);
+    } else {
+        $('.moveGUI').css('opacity', 1);
+    }
+}
 
 let pallette = {
     color: '#66d45e'
@@ -73,7 +111,8 @@ colorController.onChange(function () {
     let color = colorController.getValue()
     pallette.color = color;
     $('.fa-brands').css('color', color);
-    $('.dg .c .slider-fg').css('background', `${color} !important`);
+    $('.dg .c .slider-fg').css('background', color);
+    $('a').css('color', color);
     Init()
 })
 
@@ -148,7 +187,7 @@ let flowField = [];
 
 function getAngle(x, y, x_mod, y_mod) {
     // console.log(x_mod, y_mod);
-    return (Math.cos(x * x_mod) + Math.cos(y * y_mod)) * Math.PI / 2;
+    return (calculateWithTrigState(x * x_mod) + Math.cos(y * y_mod)) * Math.PI / 2;
 }
 
 function getFlowField(rows, cols) {
@@ -203,11 +242,13 @@ function Init() {
     }
 
     frame();
+
+    $('.dg .c .slider-fg').css('background', colorController.getValue());
 }
 
 window.setTimeout(function () {
     Init();
-    if (auto_flow.auto_flow) { autoFlow(); }
+    if (auto_flow.auto_flow) { randomizeFlow(); }
 
     window.addEventListener("resize", Init, false);
 }, 15);

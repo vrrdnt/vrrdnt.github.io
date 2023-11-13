@@ -34,9 +34,13 @@ canvas {
     column-fill: balance;
 } */
 
-.links a {
+a {
     margin: 0;
     color: hsla(116, 58%, 60%, 1);
+}
+
+.smalltext {
+    margin: 0;
 }
 
 .dg .c .slider-fg {
@@ -55,16 +59,6 @@ canvas {
     display: none;
 }
 
-.dg {
-    opacity: 1;
-    /* text-align: center; */
-    -webkit-transition: all 4s ease-in-out;
-    -moz-transition: all 4s ease-in-out;
-    -ms-transition: all 4s ease-in-out;
-    -o-transition: all 4s ease-in-out;
-    transition: all 4s ease-in-out;
-}
-
 .fa-brands {
     color: hsla(116, 58%, 60%, 1);
 }
@@ -76,4 +70,20 @@ canvas {
     -o-transition: all 0.25s ease-in-out;
     transition: all 0.25s ease-in-out;
     color: white;
+}
+
+.moveGUI { 
+    position: fixed;
+    left: 50%;
+    bottom: 30px;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+
+    opacity: 0;
+    /* text-align: center; */
+    -webkit-transition: all 1s ease-in-out;
+    -moz-transition: all 1s ease-in-out;
+    -ms-transition: all 1s ease-in-out;
+    -o-transition: all 1s ease-in-out;
+    transition: all 1s ease-in-out;
 }
