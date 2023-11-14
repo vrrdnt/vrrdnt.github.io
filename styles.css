@@ -1,10 +1,10 @@
 body {
-    overflow:hidden;
+    overflow: hidden;
 }
 
 canvas {
-    background:black;
-    position:fixed;
+    background: black;
+    position: fixed;
     top: 0;
     left: 0;
     z-index: -1;
@@ -13,7 +13,7 @@ canvas {
 .bodyText {
     /* position:absolute; */
     display: flex;
-    z-index:0;
+    z-index: 0;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -34,7 +34,8 @@ canvas {
     column-fill: balance;
 } */
 
-a {
+a,
+a:visited {
     margin: 0;
     color: hsla(116, 58%, 60%, 1);
 }
@@ -72,7 +73,7 @@ a {
     color: white;
 }
 
-.moveGUI { 
+.moveGUI {
     position: fixed;
     left: 50%;
     bottom: 30px;

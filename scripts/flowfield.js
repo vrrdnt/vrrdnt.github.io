@@ -5,31 +5,31 @@ let rid = null; // request animation id
 ctx.fillStyle = "hsla(0, 5%, 5%, .025)";
 
 let wait;
-function resizedw(){
+function resizedw() {
     Init();
 }
-window.onresize = function() {
+window.onresize = function () {
     clearTimeout(wait);
-    wait = setTimeout(function() {
+    wait = setTimeout(function () {
         resizedw();
     }, 100);
 };
 
-const gui = new dat.GUI( { autoPlace: false } );
+const gui = new dat.GUI({ autoPlace: false });
 
-let x_mod = {x_mod: randomIntFromInterval(-3, 3) / 100};
+let x_mod = { x_mod: randomIntFromInterval(-3, 3) / 100 };
 let x_modController = gui.add(x_mod, 'x_mod', -0.06, 0.06);
 
-let y_mod = {y_mod: randomIntFromInterval(-3, 3) / 100};
+let y_mod = { y_mod: randomIntFromInterval(-3, 3) / 100 };
 let y_modController = gui.add(y_mod, 'y_mod', -0.06, 0.06);
 
 gui.domElement.id = 'canvas';
 let customContainer = $('.moveGUI').append($(gui.domElement));
 
-let auto_flow = {auto_flow: true};
+let auto_flow = { auto_flow: true };
 let autoFlowController = gui.add(auto_flow, 'auto_flow')
 
-let trig_choice = {trig_choice: 'sin'};
+let trig_choice = { trig_choice: 'sin' };
 let trig_choiceController = gui.add(trig_choice, 'trig_choice', ['sin', 'cos', 'tan']);
 
 function calculateWithTrigState(angle) {
@@ -88,7 +88,7 @@ function stopRandomFlow() {
 $("#canvas").on("click", function () {
     if ($('.bodyText').css('opacity') == 1) {
         $('.bodyText').css('opacity', 0);
-    } 
+    }
     else {
         $('.bodyText').css('opacity', 1);
     }
