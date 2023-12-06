@@ -81,7 +81,7 @@ let octaves = 2;
 let falloff = 0.5;
 noiseDetail(octaves, falloff);
 
-for (let i = 0; i < 1000; i++) {
+for (let i = 0; i < 3500; i++) {
   particles.push(new Particle());
 }
 
