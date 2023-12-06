@@ -30,17 +30,15 @@ let auto_flow = { auto_flow: true };
 let autoFlowController = gui.add(auto_flow, 'auto_flow')
 
 let trig_choice = { trig_choice: 'sin' };
-let trig_choiceController = gui.add(trig_choice, 'trig_choice', ['sin', 'cos', 'tan']);
+let trig_choiceController = gui.add(trig_choice, 'trig_choice', ['sin', 'cos']);
 
 function calculateWithTrigState(angle) {
     let choice = trig_choiceController.getValue();
     switch (choice) {
         case 'sin':
             return Math.sin(angle);
-        case 'cos':
-            return Math.cos(angle);
         default:
-            return Math.tan(angle);
+            return Math.cos(angle);
     }
 }
 
@@ -75,7 +73,7 @@ function randomizeFlowAndRedraw() {
 
 function randomizeFlow() {
     if (!intervalID) {
-        return intervalID = setInterval(randomizeFlowAndRedraw, 1000);
+        return intervalID = setInterval(randomizeFlowAndRedraw, 5000);
     }
     stopRandomFlow();
 };
@@ -120,7 +118,7 @@ class Particle {
     constructor() {
         this.pos = { x: Math.random() * cw, y: Math.random() * ch };
         this.vel = { x: 0, y: 0 };
-        this.base = (1 + Math.random()) * 3;
+        this.base = 2 * (1 + Math.random()); // speed of particle
         this.life = randomIntFromInterval(3, 20);
         this.color = Math.random() < .2 ? colorController.getValue() : "hsla(0,0%,30%,.7)"
         this.history = [];
@@ -186,7 +184,6 @@ let cols = ~~(cw / size) + 2;
 let flowField = [];
 
 function getAngle(x, y, x_mod, y_mod) {
-    // console.log(x_mod, y_mod);
     return (calculateWithTrigState(x * x_mod) + Math.cos(y * y_mod)) * Math.PI / 2;
 }
 

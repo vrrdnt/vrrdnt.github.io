@@ -3,7 +3,7 @@ body {
 }
 
 canvas {
-    background: black;
+    background: hsla(0, 0%, 8%, 1);
     position: fixed;
     top: 0;
     left: 0;

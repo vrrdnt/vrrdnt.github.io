@@ -15,9 +15,23 @@ $(document).ready(function() {
   
       grid = new Array(cols).fill(null).map(() => new Array(rows).fill(false));
   
+      canvas.addEventListener('click', handleClick);
+
       randomizeGrid();
       draw();
       setInterval(update, 100);
+    }
+
+    function handleClick(event) {
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = event.clientX - rect.left;
+      const mouseY = event.clientY - rect.top;
+
+      const cellX = Math.floor(mouseX / cellSize);
+      const cellY = Math.floor(mouseY / cellSize);
+
+      grid[cellX][cellY] = !grid[cellX][cellY];
+      draw();
     }
   
     function randomizeGrid() {
