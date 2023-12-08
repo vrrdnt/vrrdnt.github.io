@@ -1,6 +1,6 @@
 let ctx = canvas.getContext("2d");
-let cw = (canvas.width = window.innerWidth);
-let ch = (canvas.height = window.innerHeight);
+let cw = (canvas.width = window.innerWidth * 1.7);
+let ch = (canvas.height = window.innerHeight * 1.7);
 let rid = null; // request animation id
 
 class Particle {
@@ -81,6 +81,7 @@ let octaves = 2;
 let falloff = 0.5;
 noiseDetail(octaves, falloff);
 
+
 for (let i = 0; i < 1500; i++) {
   particles.push(new Particle());
 }
@@ -118,8 +119,8 @@ function frame() {
 }
 
 function Init() {
-  cw = canvas.width = window.innerWidth;
-  ch = canvas.height = window.innerHeight;
+  cw = canvas.width = window.innerWidth * 1.7;
+  ch = canvas.height = window.innerHeight * 1.7;
 
   ctx.fillStyle = "hsla(0, 5%, 5%, .025)";
 
