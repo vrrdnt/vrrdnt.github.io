@@ -4,7 +4,7 @@ theme: "terminalcv"
 title: "hi"
 
 params:
-  version: "2.0.0"
+  version: "12.12.01-beta"
   description: "./vrrdnt"
   prompt:
     core:
