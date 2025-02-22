@@ -1,0 +1,224 @@
+## Example Config file
+baseURL: "https://vrrdnt.co"
+theme: "terminalcv"
+title: "hi"
+
+params:
+  version: "2.0.0"
+  description: "./vrrdnt"
+  prompt:
+    core:
+      text: "user@vrrdnt.co"
+      color: "lightgreen"
+      #before: "["
+      beforeColor: "lightgreen"
+      #after: '\]'
+      afterColor: "lightgreen"
+      #separator: "-"
+    separator:
+      text: ":~"
+      color: "white"
+    path:
+      #before: "["
+      beforeColor: "white"
+      text: "$"
+      color: "white"
+      #after: '\]'
+      afterColor: "white"
+    extra:
+      text: " "
+      color: "orange"
+
+  # promptColor: grey
+  # promptSimbols: ":~$"
+  # promptSimbolsColor: grey
+  # startxLocation: https://example.com
+  # useLess: true
+  exitLocation: "about:blank"
+  source: true
+  #use a ‎ (blank character) if your first character of the ascii art is a whitespace
+  greeting: |
+    ‎ :::     ::: :::::::::  :::::::::  :::::::::  ::::    ::: ::::::::::: 
+     :+:     :+: :+:    :+: :+:    :+: :+:    :+: :+:+:   :+:     :+:     
+     +:+     +:+ +:+    +:+ +:+    +:+ +:+    +:+ :+:+:+  +:+     +:+     
+     +#+     +:+ +#++:++#:  +#++:++#:  +#+    +:+ +#+ +:+ +#+     +#+     
+      +#+   +#+  +#+    +#+ +#+    +#+ +#+    +#+ +#+  +#+#+#     +#+     
+       #+#+#+#   #+#    #+# #+#    #+# #+#    #+# #+#   #+#+#     #+#     
+         ###     ###    ### ###    ### #########  ###    ####     ###     
+
+
+    Arch Linux 5.1.9-arch1-1-ARCH (tty1)
+
+    Type 'help' for a list of available commands
+
+  whois:
+    # settings:
+    #   useLess: true
+    details:
+      name: "William E. Swoveland III"
+      profession: "Cable & Antenna Maintenance and Defense"
+      location: '35°21''50.2"N 138°43''37.4"E'
+      email: "will.arctic@gmail.com"
+      homelink: "https://vrrdnt.co"
+      #description: |
+      #  Here you can write something catchy about yourself
+
+  social:
+    # settings:
+    #   useLess: true
+    #   hideName: true
+    details:
+      - name: "github"
+        url: "https://github.com/vrrdnt"
+      # - name: "facebook"
+      #   url: "https://facebook.com"
+      # - name: "myspace"
+      #   url: "https://myspace.com"
+      # - name: "hi5"
+      #   url: "https://www.hi5.com"
+      - name: "instagram"
+        url: "https://instagram.com/vrrdnt"
+      # - name: "Another social"
+      #   url: "https://anothersocial.com"
+
+  work:
+    # settings:
+    #   useLess: true
+    details:
+      - jobTitle: Cable & Antenna Defense Systems Journeyman
+        color: Blue
+        company: "United States Air Force"
+        location: Yokota Air Base, Japan
+        date: April 2024 - Present
+        description: |
+          Installing, maintaining and modifying copper core, coaxial, waveguide and fiber-optic cable and antenna systems
+          Climbing antenna support structures and wooden poles to various heights for maintenance
+          Interpreting technical data to work on cable and antenna systems
+          Operating and performing maintenance on tools, test equipment, auxiliary equipment and vehicles
+          Locating, repairing and replacing faulty closures in various systems
+
+  education:
+    details:
+      - courseName: 1D733C - Cable & Antenna Maintenance Apprentice Course
+        color: red
+        date: November 2023 - March 2024
+        description: |
+          7.5 weeks of basic military training
+          80 days of technical training at Sheppard AFB, TX
+
+      - courseName: Associate of Arts DTA
+        date: Sept 2019 - Jun 2020
+        #description: There is no need for description
+
+  skills:
+    settings:
+      useLess: false
+    details:
+      - name: Troubleshooting electronic systems
+        percentage: 80
+        #Description: you can add a description
+
+      - name: Linux
+        percentage: 40
+        #description: or you can leave it comented
+
+      - name: Hardware
+        percentage: 60
+        #description: Skill names can have colors too
+
+      - name: Networking
+        percentage: 70
+        #description: This is a description
+
+      - name: Software
+        percentage: 60
+        #description: This is a description
+
+  #   softskills:
+  #     # settings:
+  #     #   useLess: true
+  #     details:
+  #       - name: SoftSkill 1
+  #         color: red
+  #         percentage: 80
+  #         #description:
+
+  #       - name: SoftSkill 2
+  #         #color:
+  #         percentage: 90
+  #         #description: Description
+
+  languages:
+    # settings:
+    #   useLess: true
+    details:
+      - name: JavaScript
+        # color: Blue
+        percentage: 70
+        #description:
+
+      - name: Python
+        percentage: 90
+        #description: pasghettipigglywiggly
+
+      - name: HTML + CSS
+        percentage: 40
+        #description: pasghettipigglywiggly
+
+      - name: Java
+        percentage: 60
+        #description: pasghettipigglywiggly
+
+  projects:
+    # settings:
+    #   useLess: true
+    details:
+      - title: genius-to-twitter
+        color: yellow
+        date: since 2019-2023
+        link: https://github.com/vrrdnt/genius-to-twitter
+        description: a docker image for tweeting lyrics from an artist's lyrics on Genius
+
+      - title: vrrdntPy
+        color: green
+        date: 2020
+        link: https://github.com/vrrdnt/vrrdntPy
+        description: a script for automating the creation of a new music video on my youtube channel
+
+  certifications:
+    # settings:
+    #   useLess: true
+    details:
+      - certName: Forklift Operation
+        company: Classic Accessories, Costco
+        date: 2019, 2021
+        #badge: https://www.link.to.badge
+        #description: Lorem Ipsum
+
+      - certName: Tower and Pole Climbing Certification
+        company: United States Air Force
+        date: 2024
+        #badge: https://www.link.to.badge
+        #description: Lorem Ipsum
+#   misc:
+#     # settings:
+#     #   useLess: true
+#     commandName: newcommand
+#     title: "This Section can have a different command name"
+#     titleColor: teal
+#     content: |
+#       Here the title and the content can have different colors
+#       The content can be multi
+
+#       line
+
+#       And spaces       will be respected as well
+#       This section will have the default command: misc
+#       but you can name it something else with the property
+#       commandName: <String>
+#       Give it a shot and try and uncomment the line
+#       commandName: newcommand
+#       now instead of misc you can execute the newcommand for this section
+#       Auto completion will know it too! :D
+
+#     contentColor: orange
