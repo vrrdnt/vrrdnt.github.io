@@ -4,6 +4,10 @@ title = 'vrrdnt.dev'
 theme = 'ficurinia'
 copyright = "vrrdnt"
 
+[caches]
+  [caches.images]
+    dir = ':cacheDir/images'
+
 [params]
     author = "William Swoveland"
     description = "site for posts"
