@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss">
+  <channel>
+    <title>vrrdnt.dev</title>
+    <link>https://vrrdnt.dev/</link>
+    <description>Recent content on vrrdnt.dev</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>vrrdnt</copyright>
+    <lastBuildDate>Mon, 15 Sep 2025 18:27:13 +0900</lastBuildDate><atom:link href="https://vrrdnt.dev/index.xml" rel="self" type="application/rss+xml" /><icon>https://vrrdnt.dev/logo.svg</icon>
+    
+    
+    <item>
+      <title>minecraft server hosting</title>
+      <link>https://vrrdnt.dev/posts/minecraft-server-hosting/</link>
+      <pubDate>Mon, 15 Sep 2025 18:27:13 +0900</pubDate>
+      
+      <guid>https://vrrdnt.dev/posts/minecraft-server-hosting/</guid>
+      <description><![CDATA[<p>in this post i&rsquo;m aiming to illustrate the methods available to you in hosting a minecraft server (and anything else, really.) there&rsquo;s a lot of ways to do it!</p>
+<hr>
+<h2 id="cloud-hosting-providers">cloud hosting providers</h2>
+<p>cloud hosting is preferable if you are not interested in building your own server, and there&rsquo;s a few reasons you might not want to:</p>
+<ul>
+<li>energy cost</li>
+<li>noise</li>
+<li>bad home networking</li>
+<li>responsibility of security</li>
+</ul>
+<p>below are some cloud hosting providers and their pros and cons.</p>
+<h3 id="ovh"><a href="https://us.ovhcloud.com/vps/">OVH</a></h3>
+<table>
+  <thead>
+      <tr>
+          <th>pros</th>
+          <th>cons</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>cheap dedicated hardware</td>
+          <td>control panel is dated, billing is slow</td>
+      </tr>
+      <tr>
+          <td>game-specific servers have ddos mitigation built-in</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>decent hardware options for the price (e.g., ryzen, intel i7/i9, ecc ram)</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>good for long-term hosting if you don’t mind the setup</td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="digitalocean"><a href="https://www.digitalocean.com/pricing/droplets">DigitalOcean</a></h3>
+<table>
+  <thead>
+      <tr>
+          <th>pros</th>
+          <th>cons</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>fast to spin up</td>
+          <td>network bandwidth caps exist</td>
+      </tr>
+      <tr>
+          <td>ideal for small vanilla servers or dev testing</td>
+          <td>not ideal for big modpacks or many players</td>
+      </tr>
+      <tr>
+          <td>plans from $4/month</td>
+          <td>cpu performance can be pretty limited</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="aws-ec2"><a href="https://aws.amazon.com/ec2/">AWS EC2</a></h3>
+<table>
+  <thead>
+      <tr>
+          <th>pros</th>
+          <th>cons</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>flexible</td>
+          <td>expensive</td>
+      </tr>
+      <tr>
+          <td>fine-tuned instance selection (use t4g/t3a for cheap burstable, c7g for modded)</td>
+          <td>egress bandwidth is not free</td>
+      </tr>
+      <tr>
+          <td>ebs + efs for storage (fast!)</td>
+          <td>too expensive unless you&rsquo;re using free tier or spot instances smartly</td>
+      </tr>
+      <tr>
+          <td></td>
+          <td>aws control panel is fucking insane</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="building-your-own-my-personal-favorite">building your own (my personal favorite)</h2>
+<p>if you have decent home networking (at least a gigabit up+down) self-hosting might be for you.</p>
+<table>
+  <thead>
+      <tr>
+          <th>pros</th>
+          <th>cons</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>upfront cost for parts or a used server</td>
+          <td>noise, power, cooling, and reliability are your problem</td>
+      </tr>
+      <tr>
+          <td>full control, no monthly fees for the server itself</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>great if you already have a proxmox node or nas</td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<p>getting the right parts for a server can be tricky. you can generally get better stuff since you don&rsquo;t have to worry about getting a GPU, unless you go with an AMD cpu and want to do Plex transcoding and shit like that.
+when it comes to minecraft, you want to aim for the best <a href="https://www.cpubenchmark.net/singleThread.html">single-thread performance</a> you can afford.</p>
+<hr>
+<h2 id="notes-about-server-management-and-networking">notes about server management and networking</h2>
+<p>if you&rsquo;re running a server at your house, you have to port forward. do not forget to port forward.
+minecraft, by default, broadcasts the server on port 25565. if you don&rsquo;t have this forwarded in your router management interface, people outside your network will not be able to connect to it.
+you can totally do some hacky shit with tailscale or wireguard, but that&rsquo;s up to you.</p>
+<p>additionally, it&rsquo;s probably a good idea to harden your server&rsquo;s security. you should only use a SSH key to log in to your server, and you should consider changing the port the SSH server listens on. i think by default it&rsquo;s port 22, and there are thousands of scanners on the internet that <em>will</em> find your server if SSH is on port 22. disabling password authentication and only using a key helps mitigate security concerns.</p>
+<p>lastly, do not run your minecraft server as root. if you&rsquo;re not using docker and are just using a systemd service, create a <code>minecraft</code> user and group and use that user to run the minecraft server.</p>
+<h2 id="recommended-server-stack">recommended server stack</h2>
+<h3 id="base-os">base os</h3>
+<p>use ubuntu server 24.04.</p>
+<h3 id="server-runtime">server runtime</h3>
+<p>it&rsquo;s your choice when it comes to how you manage the server. i prefer to use <a href="https://www.docker.com/">docker</a> for running any game server, but i&rsquo;m generally running more than one at a time.
+if you&rsquo;re only going to be running one server at a time, you can absolutely get away with using a systemd service to manage the server. to start the server you&rsquo;d run <code>systemctl start minecraft</code>, and you&rsquo;d run <code>systemctl stop minecraft</code> to stop it. magical.</p>
+<p>if you are interested in using docker, you can install either <a href="https://pterodactyl.io/">Pterodactyl</a> or <a href="https://pelican.dev/">Pelican</a>. pelican is a fork of pterodactyl, and looks better imo. they both use docker to manage your game servers, and use a Nest/Egg system to handle server installation and configuration &ndash; this makes it easy to run servers only built for Windows, which is nice.</p>
+<hr>
+<h2 id="modded-notes">modded notes</h2>
+<ul>
+<li>always use a start script or docker image with the right flags</li>
+<li>most modpacks (ATM, FTB, etc.) use forge or fabric</li>
+<li>server RAM: minimum 6–8GB for large packs</li>
+<li>keep <code>max-tick-time=-1</code> for debugging long tick hangs</li>
+<li>log monitoring helps (multilog, journalctl, etc.)</li>
+</ul>
+<hr>
+<h2 id="pros-and-cons-summary">pros and cons summary</h2>
+<table>
+  <thead>
+      <tr>
+          <th>option</th>
+          <th>pros</th>
+          <th>cons</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>ovh</td>
+          <td>cheap, powerful</td>
+          <td>old UI, bad support</td>
+      </tr>
+      <tr>
+          <td>digitalocean</td>
+          <td>fast deploy, clean UI</td>
+          <td>not good for modded, expensive cpu</td>
+      </tr>
+      <tr>
+          <td>aws ec2</td>
+          <td>flexible, scalable</td>
+          <td>expensive, billing is confusing</td>
+      </tr>
+      <tr>
+          <td>home server</td>
+          <td>full control, no fees</td>
+          <td>uptime, noise, power, manual upkeep</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="closing-thoughts">closing thoughts</h2>
+<p>if you want full control and already run other services, self-host. if you want convenience and a clean UI, use digitalocean or ovh. if you&rsquo;re managing multiple servers or users, pterodactyl/pelican is worth the setup. docker is ideal for isolation and repeatability. keep backups automated, monitor performance, and version-lock mods.</p>
+]]></description>
+      
+    </item>
+    
+    
+    
+    
+    
+    
+  </channel>
+</rss>

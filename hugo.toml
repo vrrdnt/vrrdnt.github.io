@@ -1,0 +1,19 @@
+baseURL = 'https://vrrdnt.dev/'
+languageCode = 'en-us'
+title = 'vrrdnt.dev'
+theme = 'ficurinia'
+copyright = "vrrdnt"
+
+[params]
+    author = "William Swoveland"
+    description = "site for posts"
+
+    posts = "posts"
+    showRss = false
+
+    logo = "/logo.svg"
+    logoAltText = "Logo"
+    favicon = "/favicon.png"
+    faviconIco = "/favicon.ico"
+    appletouch = "/apple-touch-icon.png"
+    svgicon = "/logo.svg"

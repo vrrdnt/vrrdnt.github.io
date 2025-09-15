@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "name": "vrrdnt.dev",
+  "short_name": "vrrdnt.dev",
+  "start_url": "/",
+  "display": "standalone",
+  
+  
+  
+  "background_color": "#242629",
+  "theme_color": "#60994a"
+  
+    ,
+    "description": "site for posts"
+  
+  
+}
+
