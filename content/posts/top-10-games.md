@@ -28,7 +28,7 @@ A reflection on video games (and making them) in video game form. Beautiful and 
 
  > He is | he is not | he is walking in the Garden. He is talking | silent | singing.
 
-A controversial pick for sure, but Destiny is near and dear to my heart. I picked it up and middle school and was hooked up to the last story expansion, The Final Shape. Destiny has the most incredible lore I've ever read -- I had my mom send me [snippets](https://www.ishtar-collective.net/categories/book-aspect) while I was in basic training.
+A controversial pick for sure, but Destiny is near and dear to my heart. I picked it up in middle school and was hooked up to the last story expansion, The Final Shape. Destiny has the most incredible lore I've ever read -- I had my mom send me [snippets](https://www.ishtar-collective.net/categories/book-aspect) while I was in basic training.
 
 ### 7: Portal (1 & 2)
 ![Portal](https://static.wixstatic.com/media/702def_1dad6c4b1f6c47d0b86f9226e734fbfa~mv2.gif)
@@ -65,7 +65,7 @@ I cried.
 
 > VOLITION [Easy: Success] -- No. This is somewhere to be. This is all you have, but it's still something. Streets and sodium lights. The sky, the world. You're still alive.
 
-A beautiful, haunting story of an alcoholic detective who can't remember anything. "Voices" in your head are personified and have tangible effects on dialogue and your chances of success and completing things. 
+A beautiful, haunting story of an alcoholic detective who can't remember anything. "Voices" in your head are personified and have tangible effects on dialogue and your chances of success in various contexts. 
 
 ### 1: Factorio
 
