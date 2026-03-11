@@ -141,10 +141,10 @@ section > h2 {
   position: absolute;
   top: 0.6rem;
   right: 0.6rem;
-  width: 48px;
-  height: 48px;
-  image-rendering: pixelated;
-  opacity: 0.85;
+  width: 58px;
+  height: 58px;
+  image-rendering: auto;
+  opacity: 1;
   transition: opacity 0.25s;
 }
 
@@ -166,9 +166,9 @@ section > h2 {
 }
 
 .metal-icon {
-  width: 20px;
-  height: 20px;
-  image-rendering: pixelated;
+  width: 64px;
+  height: 64px;
+  image-rendering: auto;
   vertical-align: middle;
 }
 
@@ -368,7 +368,6 @@ section > h2 {
   margin-top: 0.35rem;
   position: relative;
   background: var(--bg-input);
-  overflow: hidden;
 }
 
 .range-bar-fill {
@@ -379,27 +378,18 @@ section > h2 {
   opacity: 0.4;
 }
 
-/* === Ratio Status === */
-.ratio-status {
-  margin-top: 1rem;
-  padding: 0.6rem 1rem;
-  border-radius: var(--radius-sm);
-  font-size: 0.85rem;
-  font-weight: 500;
-  text-align: center;
+.range-bar-dot {
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 4px var(--accent-glow);
+  transition: left 0.15s ease;
 }
 
-.ratio-status.valid {
-  background: rgba(74, 222, 128, 0.1);
-  color: var(--success);
-  border: 1px solid rgba(74, 222, 128, 0.2);
-}
-
-.ratio-status.invalid {
-  background: rgba(248, 113, 113, 0.1);
-  color: var(--error);
-  border: 1px solid rgba(248, 113, 113, 0.2);
-}
 
 /* === Results Panel === */
 .crucible-info {
@@ -409,9 +399,15 @@ section > h2 {
 
 .ingot-count {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
+}
+
+.ingot-count-icon {
+  width: 48px;
+  height: 48px;
+  image-rendering: auto;
 }
 
 .ingot-number {

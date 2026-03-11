@@ -1,13 +1,13 @@
 // === Alloy Data ===
 const METALS = {
-  copper:   { name: 'Copper',   color: '#d97734', icon: 'img/Ingot-copper.png' },
-  tin:      { name: 'Tin',      color: '#8faab3', icon: 'img/Ingot-tin.png' },
-  bismuth:  { name: 'Bismuth',  color: '#6b8e7b', icon: 'img/Ingot-bismuth.png' },
-  zinc:     { name: 'Zinc',     color: '#a3b8c8', icon: 'img/Ingot-zinc.png' },
-  gold:     { name: 'Gold',     color: '#e8c44a', icon: 'img/Ingot-gold.png' },
-  silver:   { name: 'Silver',   color: '#c0c0c0', icon: 'img/Ingot-silver.png' },
-  lead:     { name: 'Lead',     color: '#6b6b80', icon: 'img/Ingot-lead.png' },
-  nickel:   { name: 'Nickel',   color: '#9a9a7a', icon: 'img/Ingot-nickel.png' },
+  copper:   { name: 'Copper',   color: '#d97734', ingot: 'img/Ingot-copper.png',  nugget: 'img/Nugget-nativecopper.png' },
+  tin:      { name: 'Tin',      color: '#8faab3', ingot: 'img/Ingot-tin.png',     nugget: 'img/Nugget-cassiterite.png' },
+  bismuth:  { name: 'Bismuth',  color: '#6b8e7b', ingot: 'img/Ingot-bismuth.png', nugget: 'img/Nugget-bismuthinite.png' },
+  zinc:     { name: 'Zinc',     color: '#a3b8c8', ingot: 'img/Ingot-zinc.png',    nugget: 'img/Nugget-sphalerite.png' },
+  gold:     { name: 'Gold',     color: '#e8c44a', ingot: 'img/Ingot-gold.png',    nugget: 'img/Nugget_nativegold.png' },
+  silver:   { name: 'Silver',   color: '#c0c0c0', ingot: 'img/Ingot-silver.png',  nugget: 'img/Nugget-nativesilver.png' },
+  lead:     { name: 'Lead',     color: '#6b6b80', ingot: 'img/Ingot-lead.png',    nugget: 'img/Nugget-galena.png' },
+  nickel:   { name: 'Nickel',   color: '#9a9a7a', ingot: 'img/Ingot-nickel.png',  nugget: 'img/Nugget-pentlandite.png' },
 };
 
 const ALLOYS = [
@@ -143,7 +143,6 @@ const calculator = document.getElementById('calculator');
 const alloyTitle = document.getElementById('alloyTitle');
 const alloyDesc = document.getElementById('alloyDesc');
 const slidersContainer = document.getElementById('slidersContainer');
-const ratioStatus = document.getElementById('ratioStatus');
 const ingotCount = document.getElementById('ingotCount');
 const nuggetTotal = document.getElementById('nuggetTotal');
 const nuggetBreakdown = document.getElementById('nuggetBreakdown');
@@ -302,7 +301,7 @@ function buildSliders() {
     group.innerHTML = `
       <div class="slider-label">
         <span class="slider-metal-name">
-          <img class="metal-icon" src="${metal.icon}" alt="${metal.name}" width="20" height="20">
+          <img class="metal-icon" src="${metal.nugget}" alt="${metal.name}" width="34" height="34">
           ${metal.name}
         </span>
         <span class="slider-range-label">${comp.min}% – ${comp.max}%</span>
@@ -316,6 +315,7 @@ function buildSliders() {
       </div>
       <div class="range-bar">
         <div class="range-bar-fill" style="left:${comp.min}%;width:${comp.max - comp.min}%;background:${metal.color}"></div>
+        <div class="range-bar-dot" data-dot="${comp.metal}" style="left:${value}%"></div>
       </div>
     `;
 
@@ -398,19 +398,9 @@ function updateSliderDisplays() {
     const pct = slidersContainer.querySelector(`[data-pct="${comp.metal}"]`);
     if (slider) slider.value = sliderValues[comp.metal];
     if (pct) pct.textContent = `${sliderValues[comp.metal]}%`;
+    const dot = slidersContainer.querySelector(`[data-dot="${comp.metal}"]`);
+    if (dot) dot.style.left = `${sliderValues[comp.metal]}%`;
   }
-}
-
-// === Check if ratios are valid ===
-function checkValidity() {
-  if (!selectedAlloy) return { valid: false, issues: [] };
-  const issues = [];
-  for (const comp of selectedAlloy.components) {
-    const val = sliderValues[comp.metal];
-    if (val < comp.min) issues.push(`${METALS[comp.metal].name} below minimum (${comp.min}%)`);
-    if (val > comp.max) issues.push(`${METALS[comp.metal].name} above maximum (${comp.max}%)`);
-  }
-  return { valid: issues.length === 0, issues };
 }
 
 // === URL hash state ===
@@ -476,17 +466,6 @@ function updateResults() {
   const alloy = selectedAlloy;
   if (!alloy) return;
 
-  const { valid, issues } = checkValidity();
-
-  // Ratio status
-  if (valid) {
-    ratioStatus.className = 'ratio-status valid';
-    ratioStatus.textContent = 'Valid alloy ratio';
-  } else {
-    ratioStatus.className = 'ratio-status invalid';
-    ratioStatus.textContent = issues.join(' · ');
-  }
-
   // Calculate nuggets for the given multiplier
   // 1 ingot = 100 units, 1 nugget = 5 units, so 1 ingot = 20 nuggets
   const UNITS_PER_NUGGET = 5;
@@ -503,8 +482,12 @@ function updateResults() {
   }
 
   // Ingots produced (each ingot = 100 units)
-  const ingots = valid ? multiplier : 0;
-  ingotCount.textContent = ingots;
+  ingotCount.textContent = multiplier;
+  const ingotIcon = document.getElementById('ingotIcon');
+  ingotIcon.src = alloy.icon;
+  ingotIcon.alt = alloy.name;
+  ingotIcon.style.display = '';
+  document.getElementById('ingotLabel').textContent = `${alloy.name} ingot${multiplier !== 1 ? 's' : ''}`;
   nuggetTotal.textContent = `${totalNuggets} nuggets total`;
 
   // Nugget breakdown
@@ -515,7 +498,7 @@ function updateResults() {
     const row = document.createElement('div');
     row.className = 'nugget-row';
     row.innerHTML = `
-      <img class="metal-icon" src="${metal.icon}" alt="${metal.name}" width="20" height="20">
+      <img class="metal-icon" src="${metal.nugget}" alt="${metal.name}" width="34" height="34">
       <span class="nugget-row-name">${metal.name}</span>
       <span class="nugget-row-count">${count}</span>
       <span class="nugget-row-unit">nuggets</span>
@@ -532,7 +515,8 @@ function updateResults() {
     seg.className = 'crucible-segment';
     seg.style.width = `${pct}%`;
     seg.style.background = metal.color;
-    seg.innerHTML = `<span class="crucible-segment-tooltip">${metal.name}: ${pct}%</span>`;
+    // seg.innerHTML = `<span class="crucible-segment-tooltip">${metal.name}: ${pct}%</span>`;
+    // Weird z-index issue here
     crucibleVisual.appendChild(seg);
   }
 
