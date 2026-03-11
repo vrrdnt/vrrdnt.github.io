@@ -1,13 +1,13 @@
 // === Alloy Data ===
 const METALS = {
-  copper:   { name: 'Copper',   color: '#d97734' },
-  tin:      { name: 'Tin',      color: '#8faab3' },
-  bismuth:  { name: 'Bismuth',  color: '#6b8e7b' },
-  zinc:     { name: 'Zinc',     color: '#a3b8c8' },
-  gold:     { name: 'Gold',     color: '#e8c44a' },
-  silver:   { name: 'Silver',   color: '#c0c0c0' },
-  lead:     { name: 'Lead',     color: '#6b6b80' },
-  nickel:   { name: 'Nickel',   color: '#9a9a7a' },
+  copper:   { name: 'Copper',   color: '#d97734', icon: 'img/Ingot-copper.png' },
+  tin:      { name: 'Tin',      color: '#8faab3', icon: 'img/Ingot-tin.png' },
+  bismuth:  { name: 'Bismuth',  color: '#6b8e7b', icon: 'img/Ingot-bismuth.png' },
+  zinc:     { name: 'Zinc',     color: '#a3b8c8', icon: 'img/Ingot-zinc.png' },
+  gold:     { name: 'Gold',     color: '#e8c44a', icon: 'img/Ingot-gold.png' },
+  silver:   { name: 'Silver',   color: '#c0c0c0', icon: 'img/Ingot-silver.png' },
+  lead:     { name: 'Lead',     color: '#6b6b80', icon: 'img/Ingot-lead.png' },
+  nickel:   { name: 'Nickel',   color: '#9a9a7a', icon: 'img/Ingot-nickel.png' },
 };
 
 const ALLOYS = [
@@ -18,6 +18,7 @@ const ALLOYS = [
     tierLabel: 'Bronze Age',
     desc: 'A reliable, versatile bronze alloy. The classic choice for tools and weapons.',
     accent: '#cd7f32',
+    icon: 'img/Ingot-tinbronze.png',
     components: [
       { metal: 'copper', min: 88, max: 92 },
       { metal: 'tin',    min: 8,  max: 12 },
@@ -30,6 +31,7 @@ const ALLOYS = [
     tierLabel: 'Bronze Age',
     desc: 'A three-component bronze. Useful when tin is scarce.',
     accent: '#6b8e7b',
+    icon: 'img/Ingot-bismuthbronze.png',
     components: [
       { metal: 'copper',  min: 50, max: 70 },
       { metal: 'bismuth', min: 10, max: 20 },
@@ -43,6 +45,7 @@ const ALLOYS = [
     tierLabel: 'Bronze Age',
     desc: 'A decorative bronze with gold and silver. Same tool tier as other bronzes.',
     accent: '#4a4a5a',
+    icon: 'img/Ingot-blackbronze.png',
     components: [
       { metal: 'copper', min: 68, max: 84 },
       { metal: 'gold',   min: 8,  max: 16 },
@@ -56,6 +59,7 @@ const ALLOYS = [
     tierLabel: 'Utility',
     desc: 'Used for lanterns, locust nests, and various mechanical parts.',
     accent: '#c5a83d',
+    icon: 'img/Ingot-brass.png',
     components: [
       { metal: 'copper', min: 60, max: 70 },
       { metal: 'zinc',   min: 30, max: 40 },
@@ -68,6 +72,7 @@ const ALLOYS = [
     tierLabel: 'Utility',
     desc: 'A silver-colored alloy used for coinage and decoration.',
     accent: '#9a9a7a',
+    icon: 'img/Ingot-cupronickel.png',
     components: [
       { metal: 'copper', min: 65, max: 75 },
       { metal: 'nickel', min: 25, max: 35 },
@@ -80,6 +85,7 @@ const ALLOYS = [
     tierLabel: 'Precious',
     desc: 'A shimmering alloy of gold and silver, prized for its beauty.',
     accent: '#e0c860',
+    icon: 'img/Ingot-electrum.png',
     components: [
       { metal: 'gold',   min: 40, max: 60 },
       { metal: 'silver', min: 40, max: 60 },
@@ -92,6 +98,7 @@ const ALLOYS = [
     tierLabel: 'Utility',
     desc: 'A lead-heavy alloy with a small copper component.',
     accent: '#6b6b80',
+    icon: 'img/Ingot-molybdochalkos.png',
     components: [
       { metal: 'lead',   min: 88, max: 92 },
       { metal: 'copper', min: 8,  max: 12 },
@@ -104,6 +111,7 @@ const ALLOYS = [
     tierLabel: 'Utility',
     desc: 'Equal parts lead and tin. Used for joining metals.',
     accent: '#7a7a90',
+    icon: 'img/Ingot-leadsolder.png',
     components: [
       { metal: 'lead', min: 45, max: 55 },
       { metal: 'tin',  min: 45, max: 55 },
@@ -116,6 +124,7 @@ const ALLOYS = [
     tierLabel: 'Utility',
     desc: 'Silver and tin solder for finer metalwork.',
     accent: '#b0b0c0',
+    icon: 'img/Ingot-silversolder.png',
     components: [
       { metal: 'silver', min: 40, max: 50 },
       { metal: 'tin',    min: 50, max: 60 },
@@ -156,6 +165,7 @@ function buildAlloyGrid() {
     const metals = alloy.components.map(c => METALS[c.metal].name).join(' + ');
 
     card.innerHTML = `
+      <img class="alloy-card-icon" src="${alloy.icon}" alt="${alloy.name}" width="48" height="48">
       <span class="alloy-card-tier ${tierClass}">${alloy.tierLabel}</span>
       <div class="alloy-card-name">${alloy.name}</div>
       <div class="alloy-card-metals">${metals}</div>
@@ -292,7 +302,7 @@ function buildSliders() {
     group.innerHTML = `
       <div class="slider-label">
         <span class="slider-metal-name">
-          <span class="metal-dot" style="background:${metal.color}"></span>
+          <img class="metal-icon" src="${metal.icon}" alt="${metal.name}" width="20" height="20">
           ${metal.name}
         </span>
         <span class="slider-range-label">${comp.min}% – ${comp.max}%</span>
@@ -505,7 +515,7 @@ function updateResults() {
     const row = document.createElement('div');
     row.className = 'nugget-row';
     row.innerHTML = `
-      <span class="metal-dot" style="background:${metal.color}"></span>
+      <img class="metal-icon" src="${metal.icon}" alt="${metal.name}" width="20" height="20">
       <span class="nugget-row-name">${metal.name}</span>
       <span class="nugget-row-count">${count}</span>
       <span class="nugget-row-unit">nuggets</span>

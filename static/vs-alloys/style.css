@@ -137,6 +137,21 @@ section > h2 {
   opacity: 1;
 }
 
+.alloy-card-icon {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  width: 48px;
+  height: 48px;
+  image-rendering: pixelated;
+  opacity: 0.85;
+  transition: opacity 0.25s;
+}
+
+.alloy-card:hover .alloy-card-icon {
+  opacity: 1;
+}
+
 .alloy-card-name {
   font-family: 'Cinzel', serif;
   font-weight: 600;
@@ -148,6 +163,13 @@ section > h2 {
 .alloy-card-metals {
   font-size: 0.8rem;
   color: var(--text-dim);
+}
+
+.metal-icon {
+  width: 20px;
+  height: 20px;
+  image-rendering: pixelated;
+  vertical-align: middle;
 }
 
 /* === Calculator === */
@@ -428,7 +450,7 @@ section > h2 {
   border-radius: var(--radius-sm);
 }
 
-.nugget-row .metal-dot {
+.nugget-row .metal-icon {
   flex-shrink: 0;
 }
 
