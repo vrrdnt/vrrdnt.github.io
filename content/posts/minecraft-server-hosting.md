@@ -1,6 +1,6 @@
 +++
 date = '2025-09-15T18:27:13+09:00'
-draft = false
+draft = true
 title = 'minecraft server hosting'
 +++
 in this post i'm aiming to illustrate the methods available to you in hosting a minecraft server (and anything else, really.) there's a lot of ways to do it!
