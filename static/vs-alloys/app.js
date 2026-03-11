@@ -355,24 +355,28 @@ function buildSliders() {
     slidersContainer.appendChild(group);
   }
 
-  // Add multiplier controls
+  // Add multiplier controls (max 25 ingots = 2560 units / 100 per ingot)
+  const MAX_INGOTS = 25;
   const multDiv = document.createElement('div');
   multDiv.className = 'multiplier-controls';
   multDiv.innerHTML = `
-    <span class="multiplier-label">Batches:</span>
-    <div class="multiplier-btns">
-      ${[1, 2, 4, 8, 16].map(n => `
-        <button class="multiplier-btn ${n === multiplier ? 'active' : ''}" data-mult="${n}">${n}x</button>
-      `).join('')}
-    </div>
+    <span class="multiplier-label">Ingots:</span>
+    <button class="mult-step-btn" data-dir="-1">&minus;</button>
+    <input type="number" class="mult-input" min="1" max="${MAX_INGOTS}" value="${multiplier}">
+    <button class="mult-step-btn" data-dir="1">+</button>
+    <span class="mult-max-label">/ ${MAX_INGOTS} max</span>
   `;
-  multDiv.querySelectorAll('.multiplier-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      multiplier = parseInt(btn.dataset.mult);
-      multDiv.querySelectorAll('.multiplier-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      updateResults();
-    });
+
+  const multInput = multDiv.querySelector('.mult-input');
+  const setMultiplier = (val) => {
+    multiplier = Math.max(1, Math.min(MAX_INGOTS, val));
+    multInput.value = multiplier;
+    updateResults();
+  };
+
+  multInput.addEventListener('change', () => setMultiplier(parseInt(multInput.value) || 1));
+  multDiv.querySelectorAll('.mult-step-btn').forEach(btn => {
+    btn.addEventListener('click', () => setMultiplier(multiplier + parseInt(btn.dataset.dir)));
   });
   slidersContainer.appendChild(multDiv);
 }

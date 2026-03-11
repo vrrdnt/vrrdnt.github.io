@@ -606,32 +606,56 @@ footer {
   white-space: nowrap;
 }
 
-.multiplier-btns {
-  display: flex;
-  gap: 0.35rem;
-}
-
-.multiplier-btn {
+.mult-step-btn {
   background: var(--bg-card);
   border: 1px solid var(--border);
   color: var(--text);
-  padding: 0.3rem 0.7rem;
+  width: 30px;
+  height: 30px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 0.8rem;
-  font-weight: 500;
+  font-size: 1rem;
+  font-weight: 600;
   transition: all 0.2s;
   font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
-.multiplier-btn:hover {
+.mult-step-btn:hover {
   border-color: var(--accent);
   color: var(--accent);
 }
 
-.multiplier-btn.active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--bg-dark);
+.mult-input {
+  width: 48px;
+  text-align: center;
+  font-size: 1rem;
   font-weight: 600;
+  color: var(--text-bright);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.25rem;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+.mult-input::-webkit-inner-spin-button,
+.mult-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.mult-input:focus {
+  border-color: var(--accent);
+}
+
+.mult-max-label {
+  font-size: 0.8rem;
+  color: var(--text-dim);
 }
