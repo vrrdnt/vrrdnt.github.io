@@ -1,6 +1,6 @@
 +++
 date = '2025-10-31T00:01:04+09:00'
-draft = false
+draft = true
 title = 'My top 10 games'
 +++
 
