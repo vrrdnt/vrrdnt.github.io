@@ -483,7 +483,7 @@ function updateResults() {
 
   for (const comp of alloy.components) {
     const units = Math.round(totalUnits * sliderValues[comp.metal] / 100);
-    const count = units / UNITS_PER_NUGGET;
+    const count = Math.round(units / UNITS_PER_NUGGET);
     nuggets[comp.metal] = count;
     totalNuggets += count;
   }
