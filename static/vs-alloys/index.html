@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vintage Story Alloy Calculator</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Vintage Story Alloy Calculator</h1>
+      <p class="subtitle">Calculate perfect alloy ratios for your crucible</p>
+    </header>
+
+    <main>
+      <section class="alloy-selector">
+        <h2>Select Alloy</h2>
+        <div class="alloy-grid" id="alloyGrid"></div>
+      </section>
+
+      <section class="calculator" id="calculator" style="display:none;">
+        <div class="calc-header">
+          <div class="calc-header-row">
+            <h2 id="alloyTitle"></h2>
+            <button class="share-btn" id="shareBtn" onclick="copyShareLink()">Share Link</button>
+          </div>
+          <p id="alloyDesc" class="alloy-desc"></p>
+        </div>
+
+        <div class="calc-body">
+          <div class="sliders-panel">
+            <h3>Metal Ratios</h3>
+            <div id="slidersContainer"></div>
+            <div class="ratio-status" id="ratioStatus"></div>
+          </div>
+
+          <div class="results-panel">
+            <h3>Crucible Output</h3>
+            <div class="crucible-info">
+              <div class="ingot-count">
+                <span class="ingot-number" id="ingotCount">0</span>
+                <span class="ingot-label">ingots</span>
+              </div>
+              <div class="nugget-total" id="nuggetTotal">0 nuggets total</div>
+            </div>
+            <div class="nugget-breakdown" id="nuggetBreakdown"></div>
+            <div class="crucible-visual" id="crucibleVisual"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="reference">
+        <h2>Quick Reference</h2>
+        <div class="ref-info">
+          <div class="ref-card">
+            <h4>Crucible Capacity</h4>
+            <p>A crucible holds <strong>100 units</strong> of metal (= 100 nuggets). Each ingot = 100 units.</p>
+          </div>
+          <div class="ref-card">
+            <h4>How Alloys Work</h4>
+            <p>Metal ratios must fall within valid ranges. The calculator ensures your mix produces the desired alloy.</p>
+          </div>
+          <div class="ref-card">
+            <h4>Nugget Math</h4>
+            <p>1 ingot = 100 nuggets. The crucible can hold up to 1600 units (16 ingots worth of nuggets).</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Data sourced from the <a href="https://wiki.vintagestory.at/index.php?title=Metal" target="_blank" rel="noopener">Vintage Story Wiki</a></p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
