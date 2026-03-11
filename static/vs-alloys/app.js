@@ -474,13 +474,16 @@ function updateResults() {
   }
 
   // Calculate nuggets for the given multiplier
-  // 1 crucible batch = 100 units. We allow multiplier batches.
-  const totalUnits = 100 * multiplier;
+  // 1 ingot = 100 units, 1 nugget = 5 units, so 1 ingot = 20 nuggets
+  const UNITS_PER_NUGGET = 5;
+  const UNITS_PER_INGOT = 100;
+  const totalUnits = UNITS_PER_INGOT * multiplier;
   const nuggets = {};
   let totalNuggets = 0;
 
   for (const comp of alloy.components) {
-    const count = Math.round(totalUnits * sliderValues[comp.metal] / 100);
+    const units = Math.round(totalUnits * sliderValues[comp.metal] / 100);
+    const count = units / UNITS_PER_NUGGET;
     nuggets[comp.metal] = count;
     totalNuggets += count;
   }
