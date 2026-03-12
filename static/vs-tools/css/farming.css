@@ -73,6 +73,60 @@
   color: var(--bg-dark);
 }
 
+/* === Soil Selector === */
+.soil-section {
+  margin-bottom: 1.5rem;
+}
+
+.soil-selector {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.soil-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.15s;
+  min-width: 70px;
+  background: var(--bg-card);
+}
+
+.soil-card:hover {
+  border-color: var(--border);
+  background: var(--bg-card-hover);
+}
+
+.soil-card.active {
+  border-color: var(--accent);
+  background: rgba(226, 160, 74, 0.08);
+  box-shadow: 0 0 10px rgba(226, 160, 74, 0.15);
+}
+
+.soil-card img {
+  width: 40px;
+  height: 40px;
+}
+
+.soil-card-name {
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.soil-card-fert {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
 /* === Farm Layout === */
 .farm-layout {
   display: grid;

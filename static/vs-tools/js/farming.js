@@ -36,9 +36,20 @@ const SEASONS = [
   { id: 3, name: 'Fall' },
 ];
 
+const SOILS = [
+  { id: 'terra',   name: 'Terra Preta',      fertility: 80, icon: 'img/farming/soil/terrapreta.png' },
+  { id: 'high',    name: 'High Fertility',    fertility: 65, icon: 'img/farming/soil/high.png' },
+  { id: 'medium',  name: 'Medium Fertility',  fertility: 50, icon: 'img/farming/soil/medium.png' },
+  { id: 'forest',  name: 'Forest Floor',      fertility: 25, icon: 'img/farming/soil/forestfloor.png' },
+  { id: 'low',     name: 'Low Fertility',     fertility: 25, icon: 'img/farming/soil/low.png' },
+  { id: 'barren',  name: 'Barren Soil',       fertility: 5,  icon: 'img/farming/soil/barren.png' },
+  { id: 'bony',    name: 'Bony Soil',         fertility: 0,  icon: 'img/farming/soil/bonysoil.png' },
+];
+
 // === State ===
 let gridSize = 4;
 let currentSeason = 1;
+let selectedSoil = 'high';
 let selectedTool = null; // { type: 'crop'|'fert'|'eraser', id }
 // Grid data: grid[season][row][col] = { crop: id|null, fert: id|null }
 let grid = {};
@@ -70,6 +81,7 @@ function loadState() {
       if (eq > 0) params[part.slice(0, eq)] = part.slice(eq + 1);
     }
     if (params.size) gridSize = Math.max(2, Math.min(6, parseInt(params.size) || 4));
+    if (params.soil && SOILS.find(s => s.id === params.soil)) selectedSoil = params.soil;
     if (params.grid) {
       const decoded = JSON.parse(decodeURIComponent(params.grid));
       for (const [sKey, rows] of Object.entries(decoded)) {
@@ -99,18 +111,20 @@ function saveState() {
       }
     }
   }
-  const hash = `size=${gridSize}${hasData ? ':grid=' + encodeURIComponent(JSON.stringify(compact)) : ''}`;
+  const hash = `size=${gridSize}:soil=${selectedSoil}${hasData ? ':grid=' + encodeURIComponent(JSON.stringify(compact)) : ''}`;
   history.replaceState(null, '', '#' + hash);
 }
 
 // === Nutrient Calculation ===
 function calcNutrients() {
   // Returns nutrients[row][col] = { n, p, k } after all seasons
+  const soil = SOILS.find(s => s.id === selectedSoil);
+  const startFertility = soil ? soil.fertility : 100;
   const nutrients = [];
   for (let r = 0; r < gridSize; r++) {
     nutrients[r] = [];
     for (let c = 0; c < gridSize; c++) {
-      let n = 100, p = 100, k = 100;
+      let n = startFertility, p = startFertility, k = startFertility;
       for (const s of SEASONS) {
         const cell = grid[s.id]?.[r]?.[c];
         if (!cell) continue;
@@ -118,9 +132,9 @@ function calcNutrients() {
         if (cell.fert) {
           const fert = FERTILIZERS.find(f => f.id === cell.fert);
           if (fert) {
-            n = Math.min(100, n + fert.n);
-            p = Math.min(100, p + fert.p);
-            k = Math.min(100, k + fert.k);
+            n = Math.min(startFertility, n + fert.n);
+            p = Math.min(startFertility, p + fert.p);
+            k = Math.min(startFertility, k + fert.k);
           }
         }
         // Apply crop consumption
@@ -161,11 +175,32 @@ function autoSuggest() {
 
 // === Render ===
 function render() {
+  renderSoilSelector();
   renderSeasonTabs();
   renderGrid();
   renderPalette();
   renderNutrients();
   saveState();
+}
+
+function renderSoilSelector() {
+  const container = document.getElementById('soilSelector');
+  container.innerHTML = '';
+  for (const soil of SOILS) {
+    const card = document.createElement('div');
+    card.className = `soil-card${soil.id === selectedSoil ? ' active' : ''}`;
+    card.title = `${soil.name}\nStarting fertility: ${soil.fertility}% N/P/K`;
+    card.innerHTML = `
+      <img src="${soil.icon}" alt="${soil.name}" width="36" height="36">
+      <span class="soil-card-name">${soil.name}</span>
+      <span class="soil-card-fert">${soil.fertility}%</span>
+    `;
+    card.addEventListener('click', () => {
+      selectedSoil = soil.id;
+      render();
+    });
+    container.appendChild(card);
+  }
 }
 
 function renderSeasonTabs() {
