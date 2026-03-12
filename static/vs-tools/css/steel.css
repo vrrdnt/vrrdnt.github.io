@@ -256,13 +256,13 @@
   padding: 0.25rem 0.5rem;
   background: var(--bg-input);
   border-radius: 4px;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: var(--text);
 }
 
 .step-material-tag img {
-  width: 18px;
-  height: 18px;
+  width: 27px;
+  height: 27px;
 }
 
 .step-duration {

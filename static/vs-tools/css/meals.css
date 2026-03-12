@@ -223,7 +223,7 @@
 }
 
 .ingredient-item-name {
-  font-size: 0.8rem;
+  font-size: 0.6rem;
   color: var(--text);
   white-space: nowrap;
   overflow: hidden;
@@ -428,6 +428,7 @@
 }
 
 .meal-warnings {
+  text-align: center;
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
