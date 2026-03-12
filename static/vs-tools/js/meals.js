@@ -125,7 +125,7 @@ const EXPANDED_FOODS = [
   { id: 'ef-boiledegg',   name: 'Boiled Egg',          category: 'Protein', satiety: 150, inMeal: 220, icon: 'img/food/expanded/boiledegg.png' },
 
   // Fruit
-  { id: 'ef-candiedfruit',name: 'Candied Fruit',       category: 'Fruit',   satiety: 130, inMeal: 200, icon: 'img/food/expanded/candy.png' },
+  { id: 'ef-candiedfruit',name: 'Candied Fruit',       category: 'Fruit',   satiety: 130, inMeal: 200, icon: 'img/food/expanded/candiedfruit.png' },
   { id: 'ef-driedfruit',  name: 'Dried Fruit',         category: 'Fruit',   satiety: 80,  inMeal: 120, icon: 'img/food/expanded/dryfruit.png' },
   { id: 'ef-trailmixf',   name: 'Trail Mix (fruity)',  category: 'Fruit',   satiety: 100, inMeal: 150, icon: 'img/food/expanded/trailmix.png' },
 
