@@ -76,7 +76,7 @@
 /* === Farm Layout === */
 .farm-layout {
   display: grid;
-  grid-template-columns: 1fr 200px;
+  grid-template-columns: 1fr 260px;
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
@@ -107,7 +107,7 @@
   justify-content: center;
   gap: 2px;
   position: relative;
-  min-height: 60px;
+  min-height: 70px;
 }
 
 .farm-cell:hover {
@@ -125,12 +125,12 @@
 }
 
 .farm-cell-icon {
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
 }
 
 .farm-cell-name {
-  font-size: 0.6rem;
+  font-size: 0.65rem;
   color: var(--text-dim);
   text-align: center;
   line-height: 1.1;
@@ -138,14 +138,15 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-weight: 500;
 }
 
 .farm-cell-fert {
   position: absolute;
   top: 3px;
   right: 3px;
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
 }
 
 .farm-cell-empty {
@@ -175,7 +176,7 @@
 }
 
 .crop-list {
-  max-height: 320px;
+  max-height: 420px;
   overflow-y: auto;
 }
 
@@ -195,40 +196,89 @@
   gap: 0.3rem;
 }
 
-.crop-item,
-.fert-item {
+.crop-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.35rem 0.5rem;
-  border-radius: 6px;
+  gap: 0.6rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.15s;
   border: 1px solid transparent;
 }
 
-.crop-item:hover,
+.crop-item:hover {
+  background: var(--bg-input);
+  border-color: var(--border);
+}
+
+.crop-item.active {
+  background: rgba(226, 160, 74, 0.1);
+  border-color: var(--accent);
+}
+
+.crop-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.crop-item-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.crop-item-npk {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+
+/* === Fertilizer Items === */
+.fert-list {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem !important;
+}
+
+.fert-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.6rem 0.4rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 1px solid transparent;
+  text-align: center;
+}
+
 .fert-item:hover {
   background: var(--bg-input);
   border-color: var(--border);
 }
 
-.crop-item.active,
 .fert-item.active {
   background: rgba(226, 160, 74, 0.1);
   border-color: var(--accent);
 }
 
-.crop-item-name,
-.fert-item-name {
-  font-size: 0.8rem;
+.fert-item-label {
+  font-size: 0.75rem;
+  font-weight: 500;
   color: var(--text);
+  white-space: nowrap;
 }
 
-.crop-item-npk {
-  font-size: 0.65rem;
+.fert-item-npk {
+  font-size: 0.6rem;
   color: var(--text-dim);
-  margin-left: auto;
+  white-space: nowrap;
 }
 
 .palette-eraser {
@@ -393,10 +443,13 @@
     order: -1;
   }
 
-  .crop-list,
-  .fert-list {
+  .crop-list {
     flex-direction: row;
     flex-wrap: wrap;
+  }
+
+  .fert-list {
+    grid-template-columns: repeat(4, 1fr) !important;
   }
 
   .farm-controls {

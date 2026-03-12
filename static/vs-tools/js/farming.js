@@ -24,7 +24,7 @@ const CROPS = [
 
 const FERTILIZERS = [
   { id: 'none',      name: 'None',       icon: null,                         n: 0,  p: 0,  k: 0 },
-  { id: 'compost',   name: 'Compost',    icon: 'img/farming/bonemeal.png',   n: 15, p: 15, k: 15 },
+  { id: 'compost',   name: 'Compost',    icon: 'img/farming/compost.png',    n: 15, p: 15, k: 15 },
   { id: 'bonemeal',  name: 'Bonemeal',   icon: 'img/farming/bonemeal.png',   n: 0,  p: 30, k: 0 },
   { id: 'saltpeter', name: 'Saltpeter',  icon: 'img/farming/saltpeter.png',  n: 30, p: 0,  k: 0 },
   { id: 'potash',    name: 'Potash',     icon: 'img/farming/potash.png',     n: 0,  p: 0,  k: 30 },
@@ -198,9 +198,9 @@ function renderGrid() {
 
       if (crop) {
         div.innerHTML = `
-          <img class="farm-cell-icon pixel-icon" src="${crop.icon}" alt="${crop.name}" width="28" height="28">
+          <img class="farm-cell-icon pixel-icon" src="${crop.icon}" alt="${crop.name}" width="36" height="36">
           <span class="farm-cell-name">${crop.name}</span>
-          ${fert && fert.icon ? `<img class="farm-cell-fert pixel-icon" src="${fert.icon}" alt="${fert.name}" width="14" height="14">` : ''}
+          ${fert && fert.icon ? `<img class="farm-cell-fert pixel-icon" src="${fert.icon}" alt="${fert.name}" title="${fert.name}" width="18" height="18">` : ''}
         `;
       } else {
         div.innerHTML = `<span class="farm-cell-empty">+</span>
@@ -294,10 +294,13 @@ function renderPalette() {
     item.className = `crop-item${selectedTool?.type === 'crop' && selectedTool.id === crop.id ? ' active' : ''}`;
     item.draggable = true;
     const nSign = crop.n < 0 ? '+' : '-';
+    item.title = `${crop.name}\n${nSign}${Math.abs(crop.n)}N  -${crop.p}P  -${crop.k}K\nGrowth: ${crop.days} days`;
     item.innerHTML = `
-      <img class="pixel-icon" src="${crop.icon}" alt="" width="20" height="20">
-      <span class="crop-item-name">${crop.name}</span>
-      <span class="crop-item-npk">${nSign}${Math.abs(crop.n)}N</span>
+      <img class="pixel-icon" src="${crop.icon}" alt="${crop.name}" width="36" height="36">
+      <div class="crop-item-info">
+        <span class="crop-item-name">${crop.name}</span>
+        <span class="crop-item-npk">${nSign}${Math.abs(crop.n)}N</span>
+      </div>
     `;
     item.addEventListener('click', () => {
       selectedTool = (selectedTool?.type === 'crop' && selectedTool.id === crop.id)
@@ -320,10 +323,11 @@ function renderPalette() {
     if (fert.n) parts.push(`+${fert.n}N`);
     if (fert.p) parts.push(`+${fert.p}P`);
     if (fert.k) parts.push(`+${fert.k}K`);
+    item.title = `${fert.name}\n${parts.join('  ')}`;
     item.innerHTML = `
-      <img class="pixel-icon" src="${fert.icon}" alt="" width="20" height="20">
-      <span class="fert-item-name">${fert.name}</span>
-      <span class="crop-item-npk">${parts.join(' ')}</span>
+      <img class="pixel-icon" src="${fert.icon}" alt="${fert.name}" width="36" height="36">
+      <span class="fert-item-label">${fert.name}</span>
+      <span class="fert-item-npk">${parts.join(' ')}</span>
     `;
     item.addEventListener('click', () => {
       selectedTool = (selectedTool?.type === 'fert' && selectedTool.id === fert.id)

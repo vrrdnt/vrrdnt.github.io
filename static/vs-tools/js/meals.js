@@ -113,19 +113,19 @@ const EXPANDED_FOODS = [
   // Grain
   { id: 'ef-pasta',       name: 'Pasta (cooked)',     category: 'Grain',   satiety: 120, inMeal: 180, icon: 'img/food/expanded/pasta.png' },
   { id: 'ef-dumpling',    name: 'Dumpling (cooked)',   category: 'Grain',   satiety: 200, inMeal: 300, icon: 'img/food/expanded/dumpling.png' },
-  { id: 'ef-hardtack',    name: 'Hardtack',           category: 'Grain',   satiety: 150, inMeal: 220, icon: 'img/food/expanded/hardtack.png' },
-  { id: 'ef-muffin',      name: 'Muffin',             category: 'Grain',   satiety: 160, inMeal: 240, icon: 'img/food/expanded/muffin.png' },
+  { id: 'ef-hardtack',    name: 'Hardtack',           category: 'Grain',   satiety: 150, inMeal: 220, icon: 'img/food/expanded/gozinaki.png' },
+  { id: 'ef-muffin',      name: 'Muffin',             category: 'Grain',   satiety: 160, inMeal: 240, icon: 'img/food/expanded/gozinaki.png' },
 
   // Protein
   { id: 'ef-pemmican',    name: 'Pemmican (cooked)',   category: 'Protein', satiety: 100, inMeal: 100, icon: 'img/food/expanded/pemmican.png' },
   { id: 'ef-sausage',     name: 'Sausage (cooked)',    category: 'Protein', satiety: 100, inMeal: 100, icon: 'img/food/expanded/sausage.png' },
-  { id: 'ef-meatnugget',  name: 'Meat Nugget (cooked)',category: 'Protein', satiety: 210, inMeal: 310, icon: 'img/food/expanded/meatnugget.png' },
+  { id: 'ef-meatnugget',  name: 'Meat Nugget (cooked)',category: 'Protein', satiety: 210, inMeal: 310, icon: 'img/food/expanded/fishnugget.png' },
   { id: 'ef-fishnugget',  name: 'Fish Nugget (cooked)',category: 'Protein', satiety: 150, inMeal: 220, icon: 'img/food/expanded/fishnugget.png' },
   { id: 'ef-roastedacorn',name: 'Roasted Acorn',       category: 'Protein', satiety: 70,  inMeal: 70,  icon: 'img/food/expanded/roastedacorn.png' },
   { id: 'ef-boiledegg',   name: 'Boiled Egg',          category: 'Protein', satiety: 150, inMeal: 220, icon: 'img/food/expanded/boiledegg.png' },
 
   // Fruit
-  { id: 'ef-candiedfruit',name: 'Candied Fruit',       category: 'Fruit',   satiety: 130, inMeal: 200, icon: 'img/food/expanded/candiedfruit.png' },
+  { id: 'ef-candiedfruit',name: 'Candied Fruit',       category: 'Fruit',   satiety: 130, inMeal: 200, icon: 'img/food/expanded/candy.png' },
   { id: 'ef-driedfruit',  name: 'Dried Fruit',         category: 'Fruit',   satiety: 80,  inMeal: 120, icon: 'img/food/expanded/dryfruit.png' },
   { id: 'ef-trailmixf',   name: 'Trail Mix (fruity)',  category: 'Fruit',   satiety: 100, inMeal: 150, icon: 'img/food/expanded/trailmix.png' },
 
@@ -136,16 +136,47 @@ const EXPANDED_FOODS = [
   { id: 'ef-trailmixc',   name: 'Trail Mix (cheesy)',  category: 'Dairy',   satiety: 100, inMeal: 150, icon: 'img/food/expanded/trailmix.png' },
 ];
 
+// === Primitive Survival Mod Items ===
+const PRIMITIVE_SURVIVAL_FOODS = [
+  // Protein — unique PS items
+  { id: 'ps-crabmeat',     name: 'Crab Meat',        category: 'Protein', satiety: 116, inMeal: 164, icon: 'img/food/primitivesurvival/crabmeat.png' },
+  { id: 'ps-snakemeat',    name: 'Snake Meat',       category: 'Protein', satiety: 136, inMeal: 186, icon: 'img/food/primitivesurvival/snakemeat.png' },
+  { id: 'ps-fishfillet',   name: 'Fish Fillet',      category: 'Protein', satiety: 96,  inMeal: 144, icon: 'img/food/primitivesurvival/fishfillet.png' },
+  { id: 'ps-fish-small',   name: 'Small Fish (Bass)',category: 'Protein', satiety: 120, inMeal: 180, icon: 'img/food/primitivesurvival/fish-bass.png' },
+  { id: 'ps-fish-med',     name: 'Med. Fish (Trout)',category: 'Protein', satiety: 240, inMeal: 320, icon: 'img/food/primitivesurvival/fish-trout.png' },
+  { id: 'ps-fish-large',   name: 'Large Fish (Catfish)',category:'Protein',satiety: 480, inMeal: 600, icon: 'img/food/primitivesurvival/fish-catfish.png' },
+  { id: 'ps-smoked-red',   name: 'Smoked Red Meat',  category: 'Protein', satiety: 220, inMeal: 330, icon: 'img/food/primitivesurvival/smoked-redmeat.png' },
+];
+
+// === Butchering Mod Items ===
+const BUTCHERING_FOODS = [
+  // Protein
+  { id: 'bt-primemeat',    name: 'Prime Meat',       category: 'Protein', satiety: 400, inMeal: 520, icon: 'img/food/butchering/primemeat.png' },
+  { id: 'bt-smk-prime',    name: 'Smoked Prime Meat',category: 'Protein', satiety: 300, inMeal: 360, icon: 'img/food/butchering/smoked-primemeat.png' },
+  { id: 'bt-smk-red',      name: 'Smoked Red Meat',  category: 'Protein', satiety: 220, inMeal: 300, icon: 'img/food/butchering/smoked-redmeat.png' },
+  { id: 'bt-smk-fish',     name: 'Smoked Fish',      category: 'Protein', satiety: 160, inMeal: 190, icon: 'img/food/butchering/smoked-fish.png' },
+  { id: 'bt-blood',        name: 'Blood',            category: 'Protein', satiety: 80,  inMeal: 160, icon: 'img/food/butchering/blood.png' },
+  { id: 'bt-offal',        name: 'Clean Offal',      category: 'Protein', satiety: 80,  inMeal: 180, icon: 'img/food/butchering/offal.png' },
+  { id: 'bt-bloodsausage', name: 'Blood Sausage',    category: 'Protein', satiety: 740, inMeal: 740, icon: 'img/food/butchering/bloodsausage.png' },
+  { id: 'bt-blackpudding', name: 'Black Pudding',    category: 'Protein', satiety: 520, inMeal: 520, icon: 'img/food/butchering/blackpudding.png' },
+];
+
 // === State ===
 let selectedMealType = 'meat-stew';
 let selectedIngredients = [];
 let servings = 4;
 let activeCategory = 'All';
 let showExpandedFoods = false;
+let showPrimitiveSurvival = false;
+let showButchering = false;
 
 // === Get all active foods ===
 function getActiveFoods() {
-  return showExpandedFoods ? [...FOODS, ...EXPANDED_FOODS] : FOODS;
+  let foods = [...FOODS];
+  if (showExpandedFoods) foods = [...foods, ...EXPANDED_FOODS];
+  if (showPrimitiveSurvival) foods = [...foods, ...PRIMITIVE_SURVIVAL_FOODS];
+  if (showButchering) foods = [...foods, ...BUTCHERING_FOODS];
+  return foods;
 }
 
 // === Load state from URL hash ===
@@ -159,6 +190,8 @@ function loadState() {
   }
   if (parts.meal) selectedMealType = parts.meal;
   if (parts.ef === '1') showExpandedFoods = true;
+  if (parts.ps === '1') showPrimitiveSurvival = true;
+  if (parts.bt === '1') showButchering = true;
   const allFoods = getActiveFoods();
   if (parts.items) selectedIngredients = parts.items.split(',').filter(id => allFoods.find(f => f.id === id));
   if (parts.servings) servings = Math.max(1, Math.min(6, parseInt(parts.servings) || 4));
@@ -167,6 +200,8 @@ function loadState() {
 function saveState() {
   let hash = `meal=${selectedMealType}:items=${selectedIngredients.join(',')}:servings=${servings}`;
   if (showExpandedFoods) hash += ':ef=1';
+  if (showPrimitiveSurvival) hash += ':ps=1';
+  if (showButchering) hash += ':bt=1';
   history.replaceState(null, '', '#' + hash);
 }
 
@@ -394,16 +429,34 @@ document.getElementById('servingsSlider').addEventListener('input', (e) => {
   saveState();
 });
 
-// Expanded Foods toggle
-const efToggle = document.getElementById('efToggle');
-efToggle.checked = showExpandedFoods;
-efToggle.addEventListener('change', () => {
-  showExpandedFoods = efToggle.checked;
-  // Remove expanded food ingredients if toggling off
-  if (!showExpandedFoods) {
-    selectedIngredients = selectedIngredients.filter(id => FOODS.find(f => f.id === id));
-  }
-  render();
-});
+// Mod toggles
+function setupModToggle(elementId, getter, setter, modFoods) {
+  const toggle = document.getElementById(elementId);
+  toggle.checked = getter();
+  toggle.addEventListener('change', () => {
+    setter(toggle.checked);
+    if (!toggle.checked) {
+      const modIds = new Set(modFoods.map(f => f.id));
+      selectedIngredients = selectedIngredients.filter(id => !modIds.has(id));
+    }
+    render();
+  });
+}
+
+setupModToggle('efToggle',
+  () => showExpandedFoods,
+  (v) => { showExpandedFoods = v; },
+  EXPANDED_FOODS
+);
+setupModToggle('psToggle',
+  () => showPrimitiveSurvival,
+  (v) => { showPrimitiveSurvival = v; },
+  PRIMITIVE_SURVIVAL_FOODS
+);
+setupModToggle('btToggle',
+  () => showButchering,
+  (v) => { showButchering = v; },
+  BUTCHERING_FOODS
+);
 
 render();

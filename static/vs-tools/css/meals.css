@@ -3,65 +3,75 @@
 /* === Ingredient Header with Toggle === */
 .ingredient-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   margin-bottom: 0;
+  gap: 0.5rem;
 }
 
 .ingredient-header h3 {
   margin-bottom: 0;
 }
 
-.ef-toggle {
+.mod-toggles {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.mod-toggle {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
   cursor: pointer;
   user-select: none;
 }
 
-.ef-toggle input {
+.mod-toggle input {
   display: none;
 }
 
-.ef-toggle-slider {
-  width: 34px;
-  height: 18px;
+.mod-toggle-slider {
+  width: 28px;
+  height: 16px;
   background: var(--bg-input);
   border: 1px solid var(--border);
-  border-radius: 9px;
+  border-radius: 8px;
   position: relative;
   transition: all 0.2s;
+  flex-shrink: 0;
 }
 
-.ef-toggle-slider::after {
+.mod-toggle-slider::after {
   content: '';
   position: absolute;
   top: 2px;
   left: 2px;
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   background: var(--text-dim);
   border-radius: 50%;
   transition: all 0.2s;
 }
 
-.ef-toggle input:checked + .ef-toggle-slider {
+.mod-toggle input:checked + .mod-toggle-slider {
   background: rgba(74, 222, 128, 0.2);
   border-color: var(--success);
 }
 
-.ef-toggle input:checked + .ef-toggle-slider::after {
-  transform: translateX(16px);
+.mod-toggle input:checked + .mod-toggle-slider::after {
+  transform: translateX(12px);
   background: var(--success);
 }
 
-.ef-toggle-label {
-  font-size: 0.7rem;
+.mod-toggle-label {
+  font-size: 0.65rem;
   font-weight: 500;
   color: var(--text-dim);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
 }
 
 /* === Meal Type Grid === */

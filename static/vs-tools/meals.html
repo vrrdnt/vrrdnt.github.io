@@ -27,11 +27,23 @@
           <div class="ingredient-picker panel">
             <div class="ingredient-header">
               <h3>Ingredients</h3>
-              <label class="ef-toggle">
-                <input type="checkbox" id="efToggle">
-                <span class="ef-toggle-slider"></span>
-                <span class="ef-toggle-label">Expanded Foods</span>
-              </label>
+              <div class="mod-toggles">
+                <label class="mod-toggle">
+                  <input type="checkbox" id="efToggle">
+                  <span class="mod-toggle-slider"></span>
+                  <span class="mod-toggle-label">Expanded Foods</span>
+                </label>
+                <label class="mod-toggle">
+                  <input type="checkbox" id="psToggle">
+                  <span class="mod-toggle-slider"></span>
+                  <span class="mod-toggle-label">Primitive Survival</span>
+                </label>
+                <label class="mod-toggle">
+                  <input type="checkbox" id="btToggle">
+                  <span class="mod-toggle-slider"></span>
+                  <span class="mod-toggle-label">Butchering</span>
+                </label>
+              </div>
             </div>
             <div class="category-tabs" id="categoryTabs"></div>
             <div class="ingredient-grid" id="ingredientGrid"></div>
