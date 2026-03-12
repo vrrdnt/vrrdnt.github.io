@@ -1,92 +1,3 @@
-/* === Reset & Base === */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-:root {
-  --bg-dark: #1a1a2e;
-  --bg-card: #16213e;
-  --bg-card-hover: #1a2744;
-  --bg-input: #0f1729;
-  --accent: #e2a04a;
-  --accent-glow: #e2a04a44;
-  --accent-bright: #f0b960;
-  --text: #e0e0e0;
-  --text-dim: #8892a4;
-  --text-bright: #ffffff;
-  --border: #2a3a5c;
-  --success: #4ade80;
-  --warning: #fbbf24;
-  --error: #f87171;
-  --radius: 12px;
-  --radius-sm: 8px;
-}
-
-html {
-  font-size: 16px;
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: var(--bg-dark);
-  color: var(--text);
-  line-height: 1.6;
-  min-height: 100vh;
-  background-image:
-    radial-gradient(ellipse at 20% 0%, #1e2a4a 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 100%, #2a1a1a 0%, transparent 50%);
-}
-
-a {
-  color: var(--accent);
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-a:hover {
-  color: var(--accent-bright);
-}
-
-/* === Layout === */
-.app {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
-}
-
-header {
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
-header h1 {
-  font-family: 'Cinzel', serif;
-  font-size: 2.4rem;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 0.02em;
-  text-shadow: 0 0 40px var(--accent-glow);
-}
-
-.subtitle {
-  color: var(--text-dim);
-  font-size: 1.05rem;
-  margin-top: 0.4rem;
-  font-weight: 300;
-}
-
-/* === Section titles === */
-section > h2 {
-  font-family: 'Cinzel', serif;
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: var(--text-bright);
-  margin-bottom: 1.2rem;
-}
-
 /* === Alloy Grid === */
 .alloy-grid {
   display: grid;
@@ -165,6 +76,17 @@ section > h2 {
   color: var(--text-dim);
 }
 
+.alloy-card-tier {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 0.4rem;
+}
+
 .metal-icon {
   width: 64px;
   height: 64px;
@@ -176,11 +98,6 @@ section > h2 {
 .calculator {
   margin-top: 2.5rem;
   animation: fadeIn 0.4s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 .calc-header {
@@ -197,25 +114,6 @@ section > h2 {
 .calc-header h2 {
   font-family: 'Cinzel', serif;
   font-size: 1.6rem;
-  color: var(--accent);
-}
-
-.share-btn {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  color: var(--text-dim);
-  padding: 0.4rem 1rem;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  font-size: 0.8rem;
-  font-weight: 500;
-  font-family: inherit;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-
-.share-btn:hover {
-  border-color: var(--accent);
   color: var(--accent);
 }
 
@@ -390,7 +288,6 @@ section > h2 {
   transition: left 0.15s ease;
 }
 
-
 /* === Results Panel === */
 .crucible-info {
   text-align: center;
@@ -507,106 +404,6 @@ section > h2 {
   display: block;
 }
 
-/* === Reference Section === */
-.reference {
-  margin-top: 3rem;
-}
-
-.ref-info {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
-}
-
-.ref-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.2rem;
-}
-
-.ref-card h4 {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--accent);
-  margin-bottom: 0.4rem;
-}
-
-.ref-card p {
-  font-size: 0.85rem;
-  color: var(--text-dim);
-  line-height: 1.5;
-}
-
-.ref-card strong {
-  color: var(--text);
-}
-
-/* === Footer === */
-footer {
-  margin-top: 3rem;
-  text-align: center;
-  padding: 1.5rem 0;
-  border-top: 1px solid var(--border);
-  color: var(--text-dim);
-  font-size: 0.85rem;
-}
-
-/* === Responsive === */
-@media (max-width: 700px) {
-  .app {
-    padding: 1.2rem 1rem;
-  }
-
-  header h1 {
-    font-size: 1.6rem;
-  }
-
-  .alloy-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  }
-
-  .calc-body {
-    grid-template-columns: 1fr;
-  }
-
-  .ingot-number {
-    font-size: 2.4rem;
-  }
-}
-
-/* === Alloy tier badges === */
-.alloy-card-tier {
-  font-size: 0.7rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 0.15rem 0.5rem;
-  border-radius: 4px;
-  display: inline-block;
-  margin-bottom: 0.4rem;
-}
-
-.tier-low {
-  background: rgba(139, 92, 246, 0.15);
-  color: #a78bfa;
-}
-
-.tier-mid {
-  background: rgba(59, 130, 246, 0.15);
-  color: #60a5fa;
-}
-
-.tier-high {
-  background: rgba(234, 179, 8, 0.15);
-  color: #facc15;
-}
-
-.tier-utility {
-  background: rgba(107, 114, 128, 0.15);
-  color: #9ca3af;
-}
-
 /* === Multiplier Controls === */
 .multiplier-controls {
   display: flex;
@@ -676,4 +473,24 @@ footer {
 .mult-max-label {
   font-size: 0.8rem;
   color: var(--text-dim);
+}
+
+/* === Reference Section === */
+.reference {
+  margin-top: 3rem;
+}
+
+/* === Responsive === */
+@media (max-width: 700px) {
+  .alloy-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .calc-body {
+    grid-template-columns: 1fr;
+  }
+
+  .ingot-number {
+    font-size: 2.4rem;
+  }
 }

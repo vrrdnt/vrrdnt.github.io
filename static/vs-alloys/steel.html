@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Steel Making Tracker - VS Tools</title>
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/steel.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Steel Making Tracker</h1>
+      <p class="subtitle">Track your progress from iron ore to steel</p>
+    </header>
+
+    <main>
+      <div class="steel-controls">
+        <div class="steel-goal">
+          <img class="steel-goal-icon pixel-icon" src="img/steel/ingot-steel.png" alt="Steel" width="40" height="40">
+          <label for="goalInput">Steel ingots needed:</label>
+          <input type="number" class="steel-goal-input" id="goalInput" min="1" max="256" value="16">
+        </div>
+        <div class="steel-timing" id="timingInfo"></div>
+        <button class="share-btn" id="shareBtn" onclick="copyShareLink()">Share Link</button>
+        <button class="share-btn" id="resetBtn" style="color:var(--error);border-color:var(--error)">Reset Progress</button>
+      </div>
+
+      <section class="materials-summary panel">
+        <h3>Total Materials Needed</h3>
+        <div class="materials-grid" id="materialsGrid"></div>
+      </section>
+
+      <section class="progress-section">
+        <div class="progress-bar" id="progressBar"></div>
+        <div class="progress-label" id="progressLabel"></div>
+        <div class="phase-legend">
+          <span class="phase-legend-item"><span class="phase-dot" style="background:#60a5fa"></span> Preparation</span>
+          <span class="phase-legend-item"><span class="phase-dot" style="background:#fbbf24"></span> Construction</span>
+          <span class="phase-legend-item"><span class="phase-dot" style="background:#f87171"></span> Production</span>
+        </div>
+      </section>
+
+      <section class="steps-section">
+        <h2>Production Steps</h2>
+        <div class="step-list" id="stepList"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/steel.js"></script>
+</body>
+</html>

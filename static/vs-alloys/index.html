@@ -3,81 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vintage Story Alloy Calculator</title>
-  <link rel="stylesheet" href="style.css">
+  <title>VS Tools - Vintage Story Calculators & Planners</title>
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/landing.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/png" href="img/favicon.png">
 </head>
 <body>
   <div class="app">
-    <header>
-      <a href="https://vrrdnt.dev/vs-alloys/"><h1>Vintage Story Alloy Calculator</h1></a>
-      <p class="subtitle">Calculate perfect alloy ratios for your crucible</p>
+    <header class="landing-hero">
+      <h1>Vintage Story Tools</h1>
+      <p class="subtitle">Calculators and planners for Vintage Story</p>
     </header>
 
     <main>
-      <section class="alloy-selector">
-        <h2>Select Alloy</h2>
-        <div class="alloy-grid" id="alloyGrid"></div>
-      </section>
-
-      <section class="calculator" id="calculator" style="display:none;">
-        <div class="calc-header">
-          <div class="calc-header-row">
-            <h2 id="alloyTitle"></h2>
-            <button class="share-btn" id="shareBtn" onclick="copyShareLink()">Share Link</button>
-          </div>
-          <p id="alloyDesc" class="alloy-desc"></p>
-        </div>
-
-        <div class="calc-body">
-          <div class="sliders-panel">
-            <h3>Metal Ratios</h3>
-            <div id="slidersContainer"></div>
-          </div>
-
-          <div class="results-panel">
-            <h3>Crucible Output</h3>
-            <div class="crucible-info">
-              <div class="ingot-count">
-                <img class="ingot-count-icon" id="ingotIcon" src="" alt="" width="48" height="48" style="display:none">
-                <span class="ingot-number" id="ingotCount">0</span>
-                <span class="ingot-label" id="ingotLabel">ingots</span>
-              </div>
-              <div class="nugget-total" id="nuggetTotal">0 nuggets total</div>
-            </div>
-            <div class="nugget-breakdown" id="nuggetBreakdown"></div>
-            <div class="crucible-visual" id="crucibleVisual"></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="reference">
-        <h2>Quick Reference</h2>
-        <div class="ref-info">
-          <div class="ref-card">
-            <h4>Crucible Capacity</h4>
-            <p>A crucible can hold up to <strong>2560 units</strong> of metal, enough to produce up to 25 ingots at once, with 60 units left over.</p>
-          </div>
-          <div class="ref-card">
-            <h4>How Alloys Work</h4>
-            <p>Each metal must fall within a valid percentage range. The calculator keeps your mix within bounds automatically.</p>
-          </div>
-          <div class="ref-card">
-            <h4>Nugget Math</h4>
-            <p>Each nugget is <strong>5 units</strong>. An ingot takes 100 units, so 1 ingot = 20 nuggets of the right mix.</p>
-          </div>
-        </div>
-      </section>
+      <div class="landing-grid" id="toolGrid"></div>
     </main>
-
-    <footer>
-      <p>Data and ingot images sourced from the <a href="https://wiki.vintagestory.at/" target="_blank" rel="noopener">Vintage Story Wiki</a>, licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a>.</p>
-      <p>Vintage Story is developed by <a href="https://www.vintagestory.at/" target="_blank" rel="noopener">Anego Studios</a>.</p>
-    </footer>
   </div>
 
-  <script src="app.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    const TOOL_CARDS = [
+      { id: 'alloys',  name: 'Alloy Calculator',     href: 'alloys.html',  accent: '#cd7f32', icon: 'img/Ingot-tinbronze.png', desc: 'Calculate perfect metal ratios for bronze, brass, electrum, and more. See exact nugget counts for your crucible.' },
+      { id: 'meals',   name: 'Meal Planner',          href: 'meals.html',   accent: '#4ade80', icon: 'img/food/cookingpot.png',  desc: 'Plan optimal meals for balanced nutrition across all five food categories. Maximize satiety and shelf life.' },
+      { id: 'armor',   name: 'Armor Calculator',      href: 'armor.html',   accent: '#60a5fa', icon: 'img/armor/chain.png',     desc: 'Compare armor sets side-by-side. Calculate damage reduction, penalties, and find the best loadout for your needs.' },
+      { id: 'farming', name: 'Crop Rotation Planner', href: 'farming.html', accent: '#a3e635', icon: 'img/farming/carrot.png',  desc: 'Plan crop rotations to maintain soil N/P/K fertility. Simulate nutrient depletion across multiple seasons.' },
+      { id: 'steel',   name: 'Steel Making Tracker',  href: 'steel.html',   accent: '#f87171', icon: 'img/steel/ingot-steel.png', desc: 'Track your progress from iron ore to steel. Calculate materials needed and monitor each production step.' },
+    ];
+
+    const grid = document.getElementById('toolGrid');
+    for (const tool of TOOL_CARDS) {
+      const card = document.createElement('a');
+      card.className = 'landing-card';
+      card.href = tool.href;
+      card.style.setProperty('--card-accent', tool.accent);
+
+      card.innerHTML = `
+        <div class="landing-card-header">
+          <img class="landing-card-icon pixel-icon" src="${tool.icon}" alt="" width="48" height="48"
+               onerror="this.style.display='none'">
+          <span class="landing-card-name">${tool.name}</span>
+        </div>
+        <div class="landing-card-desc">${tool.desc}</div>
+      `;
+
+      grid.appendChild(card);
+    }
+  </script>
 </body>
 </html>

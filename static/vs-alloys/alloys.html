@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alloy Calculator - VS Tools</title>
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/alloys.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Alloy Calculator</h1>
+      <p class="subtitle">Calculate perfect alloy ratios for your crucible</p>
+    </header>
+
+    <main>
+      <section class="alloy-selector">
+        <h2>Select Alloy</h2>
+        <div class="alloy-grid" id="alloyGrid"></div>
+      </section>
+
+      <section class="calculator" id="calculator" style="display:none;">
+        <div class="calc-header">
+          <div class="calc-header-row">
+            <h2 id="alloyTitle"></h2>
+            <button class="share-btn" id="shareBtn" onclick="copyShareLink()">Share Link</button>
+          </div>
+          <p id="alloyDesc" class="alloy-desc"></p>
+        </div>
+
+        <div class="calc-body">
+          <div class="sliders-panel">
+            <h3>Metal Ratios</h3>
+            <div id="slidersContainer"></div>
+          </div>
+
+          <div class="results-panel">
+            <h3>Crucible Output</h3>
+            <div class="crucible-info">
+              <div class="ingot-count">
+                <img class="ingot-count-icon" id="ingotIcon" src="" alt="" width="48" height="48" style="display:none">
+                <span class="ingot-number" id="ingotCount">0</span>
+                <span class="ingot-label" id="ingotLabel">ingots</span>
+              </div>
+              <div class="nugget-total" id="nuggetTotal">0 nuggets total</div>
+            </div>
+            <div class="nugget-breakdown" id="nuggetBreakdown"></div>
+            <div class="crucible-visual" id="crucibleVisual"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="reference">
+        <h2>Quick Reference</h2>
+        <div class="ref-info">
+          <div class="ref-card">
+            <h4>Crucible Capacity</h4>
+            <p>A crucible can hold up to <strong>2560 units</strong> of metal, enough to produce up to 25 ingots at once, with 60 units left over.</p>
+          </div>
+          <div class="ref-card">
+            <h4>How Alloys Work</h4>
+            <p>Each metal must fall within a valid percentage range. The calculator keeps your mix within bounds automatically.</p>
+          </div>
+          <div class="ref-card">
+            <h4>Nugget Math</h4>
+            <p>Each nugget is <strong>5 units</strong>. An ingot takes 100 units, so 1 ingot = 20 nuggets of the right mix.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/alloys.js"></script>
+</body>
+</html>

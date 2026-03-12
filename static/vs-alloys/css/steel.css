@@ -1,0 +1,288 @@
+/* === Steel Making Tracker === */
+.steel-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.steel-goal {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.5rem;
+  flex: 1;
+  min-width: 280px;
+}
+
+.steel-goal label {
+  font-size: 0.95rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.steel-goal-input {
+  width: 72px;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.4rem;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+.steel-goal-input::-webkit-inner-spin-button,
+.steel-goal-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.steel-goal-input:focus {
+  border-color: var(--accent);
+}
+
+.steel-goal-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.steel-timing {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-left: auto;
+}
+
+.steel-timing strong {
+  color: var(--text);
+}
+
+/* === Materials Summary === */
+.materials-summary {
+  margin-bottom: 2rem;
+}
+
+.materials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.6rem;
+}
+
+.material-card {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  background: var(--bg-input);
+  border-radius: var(--radius-sm);
+}
+
+.material-card-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.material-card-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.material-card-count {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  font-variant-numeric: tabular-nums;
+}
+
+.material-card-name {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* === Progress Bar === */
+.progress-section {
+  margin-bottom: 2rem;
+}
+
+.progress-bar {
+  background: var(--bg-input);
+  border-radius: var(--radius-sm);
+  height: 24px;
+  overflow: hidden;
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+}
+
+.progress-segment {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+.progress-label strong {
+  color: var(--text);
+}
+
+.phase-legend {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.phase-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
+.phase-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+/* === Step Checklist === */
+.step-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.step-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.2rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.step-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--step-phase-color, var(--accent));
+}
+
+.step-card.completed {
+  opacity: 0.6;
+}
+
+.step-card.completed .step-name {
+  text-decoration: line-through;
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.4rem;
+}
+
+.step-checkbox {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--success);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.step-name {
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-bright);
+  flex: 1;
+}
+
+.step-phase-badge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+}
+
+.step-desc {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-left: 2.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.step-materials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-left: 2.1rem;
+}
+
+.step-material-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.5rem;
+  background: var(--bg-input);
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: var(--text);
+}
+
+.step-material-tag img {
+  width: 18px;
+  height: 18px;
+}
+
+.step-duration {
+  font-size: 0.75rem;
+  color: var(--warning);
+  margin-left: 2.1rem;
+  margin-top: 0.4rem;
+}
+
+/* === Responsive === */
+@media (max-width: 700px) {
+  .steel-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .steel-timing {
+    margin-left: 0;
+    text-align: center;
+  }
+  .materials-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+}
