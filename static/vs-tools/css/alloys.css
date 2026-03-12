@@ -1,0 +1,496 @@
+/* === Alloy Grid === */
+.alloy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.8rem;
+}
+
+.alloy-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.2rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.alloy-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--card-accent, var(--accent));
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.alloy-card:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--card-accent, var(--accent));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.alloy-card:hover::before {
+  opacity: 1;
+}
+
+.alloy-card.active {
+  border-color: var(--card-accent, var(--accent));
+  box-shadow: 0 0 0 1px var(--card-accent, var(--accent)), 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.alloy-card.active::before {
+  opacity: 1;
+}
+
+.alloy-card-icon {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  width: 58px;
+  height: 58px;
+  image-rendering: auto;
+  opacity: 1;
+  transition: opacity 0.25s;
+}
+
+.alloy-card:hover .alloy-card-icon {
+  opacity: 1;
+}
+
+.alloy-card-name {
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-bright);
+  margin-bottom: 0.3rem;
+}
+
+.alloy-card-metals {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+.alloy-card-tier {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 0.4rem;
+}
+
+.metal-icon {
+  width: 64px;
+  height: 64px;
+  image-rendering: auto;
+  vertical-align: middle;
+}
+
+/* === Calculator === */
+.calculator {
+  margin-top: 2.5rem;
+  animation: fadeIn 0.4s ease;
+}
+
+.calc-header {
+  margin-bottom: 1.5rem;
+}
+
+.calc-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.calc-header h2 {
+  font-family: 'Cinzel', serif;
+  font-size: 1.6rem;
+  color: var(--accent);
+}
+
+.alloy-desc {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+.calc-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+/* === Sliders Panel === */
+.sliders-panel,
+.results-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+}
+
+.sliders-panel h3,
+.results-panel h3 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  margin-bottom: 1.2rem;
+}
+
+.slider-group {
+  margin-bottom: 1.2rem;
+}
+
+.slider-group:last-of-type {
+  margin-bottom: 0.5rem;
+}
+
+.slider-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.slider-metal-name {
+  font-weight: 500;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.metal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.slider-range-label {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
+.slider-value-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.slider-input {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg-input);
+  outline: none;
+  cursor: pointer;
+}
+
+.slider-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  box-shadow: 0 0 8px var(--accent-glow);
+  transition: transform 0.15s;
+}
+
+.slider-input::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.slider-input::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.slider-pct {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  min-width: 48px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.pct-input {
+  width: 52px;
+  text-align: right;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  background: var(--bg-input);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  padding: 0.1rem 0.3rem;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  outline: none;
+}
+
+.pct-input::-webkit-inner-spin-button,
+.pct-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.pct-input {
+  -moz-appearance: textfield;
+}
+
+.range-bar {
+  height: 4px;
+  border-radius: 2px;
+  margin-top: 0.35rem;
+  position: relative;
+  background: var(--bg-input);
+}
+
+.range-bar-fill {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-radius: 2px;
+  opacity: 0.4;
+}
+
+.range-bar-dot {
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 4px var(--accent-glow);
+  transition: left 0.15s ease;
+}
+
+/* === Results Panel === */
+.crucible-info {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.ingot-count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.ingot-count-icon {
+  width: 48px;
+  height: 48px;
+  image-rendering: auto;
+}
+
+.ingot-number {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.ingot-label {
+  font-size: 1rem;
+  color: var(--text-dim);
+  font-weight: 500;
+}
+
+.nugget-total {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-top: 0.3rem;
+}
+
+.nugget-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.nugget-row {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.5rem 0.7rem;
+  background: var(--bg-input);
+  border-radius: var(--radius-sm);
+}
+
+.nugget-row .metal-icon {
+  flex-shrink: 0;
+}
+
+.nugget-row-name {
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+.nugget-row-count {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-bright);
+  font-variant-numeric: tabular-nums;
+}
+
+.nugget-row-unit {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  min-width: 50px;
+}
+
+/* === Crucible Visual === */
+.crucible-visual {
+  background: var(--bg-input);
+  border-radius: var(--radius-sm);
+  padding: 0.8rem;
+  display: flex;
+  height: 28px;
+  overflow: hidden;
+  gap: 2px;
+}
+
+.crucible-segment {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+  position: relative;
+}
+
+.crucible-segment-tooltip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-dark);
+  color: var(--text);
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  border: 1px solid var(--border);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.crucible-segment:hover .crucible-segment-tooltip {
+  display: block;
+}
+
+/* === Multiplier Controls === */
+.multiplier-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg-input);
+  border-radius: var(--radius-sm);
+}
+
+.multiplier-label {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.mult-step-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.mult-step-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.mult-input {
+  width: 48px;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.25rem;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+.mult-input::-webkit-inner-spin-button,
+.mult-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.mult-input:focus {
+  border-color: var(--accent);
+}
+
+.mult-max-label {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+/* === Reference Section === */
+.reference {
+  margin-top: 3rem;
+}
+
+/* === Responsive === */
+@media (max-width: 700px) {
+  .alloy-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .calc-body {
+    grid-template-columns: 1fr;
+  }
+
+  .ingot-number {
+    font-size: 2.4rem;
+  }
+}
