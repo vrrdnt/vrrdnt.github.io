@@ -113,8 +113,8 @@ const EXPANDED_FOODS = [
   // Grain
   { id: 'ef-pasta',       name: 'Pasta (cooked)',     category: 'Grain',   satiety: 120, inMeal: 180, icon: 'img/food/expanded/pasta.png' },
   { id: 'ef-dumpling',    name: 'Dumpling (cooked)',   category: 'Grain',   satiety: 200, inMeal: 300, icon: 'img/food/expanded/dumpling.png' },
-  { id: 'ef-hardtack',    name: 'Hardtack',           category: 'Grain',   satiety: 150, inMeal: 220, icon: 'img/food/expanded/gozinaki.png' },
-  { id: 'ef-muffin',      name: 'Muffin',             category: 'Grain',   satiety: 160, inMeal: 240, icon: 'img/food/expanded/gozinaki.png' },
+  { id: 'ef-hardtack',    name: 'Hardtack',           category: 'Grain',   satiety: 150, inMeal: 220, icon: 'img/food/expanded/hardtack.png' },
+  { id: 'ef-muffin',      name: 'Muffin',             category: 'Grain',   satiety: 160, inMeal: 240, icon: 'img/food/expanded/muffin.png' },
 
   // Protein
   { id: 'ef-pemmican',    name: 'Pemmican (cooked)',   category: 'Protein', satiety: 100, inMeal: 100, icon: 'img/food/expanded/pemmican.png' },
