@@ -198,13 +198,13 @@ function renderGrid() {
 
       if (crop) {
         div.innerHTML = `
-          <img class="farm-cell-icon pixel-icon" src="${crop.icon}" alt="${crop.name}" width="36" height="36">
+          <img class="farm-cell-icon pixel-icon" src="${crop.icon}" alt="${crop.name}" width="52" height="52">
           <span class="farm-cell-name">${crop.name}</span>
-          ${fert && fert.icon ? `<img class="farm-cell-fert pixel-icon" src="${fert.icon}" alt="${fert.name}" title="${fert.name}" width="18" height="18">` : ''}
+          ${fert && fert.icon ? `<div class="farm-cell-fert-wrap"><img class="farm-cell-fert pixel-icon" src="${fert.icon}" alt="${fert.name}" title="${fert.name}" width="32" height="32"><span class="farm-cell-fert-name">${fert.name}</span></div>` : ''}
         `;
       } else {
         div.innerHTML = `<span class="farm-cell-empty">+</span>
-          ${fert && fert.icon ? `<img class="farm-cell-fert pixel-icon" src="${fert.icon}" alt="${fert.name}" width="14" height="14">` : ''}`;
+          ${fert && fert.icon ? `<div class="farm-cell-fert-wrap"><img class="farm-cell-fert pixel-icon" src="${fert.icon}" alt="${fert.name}" width="24" height="24"><span class="farm-cell-fert-name">${fert.name}</span></div>` : ''}`;
       }
 
       div.addEventListener('click', () => handleCellClick(r, c));
