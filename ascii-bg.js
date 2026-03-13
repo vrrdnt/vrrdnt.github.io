@@ -259,6 +259,9 @@
   // ── Toggle button ────────────────────────────────────────────────────────────
 
   const TOGGLE_LABELS = { ascii: '[ life ]', gol: '[ matrix ]' };
+  // ASCII-only pool for button glitch — avoids double-width CJK glyphs shifting layout
+  const BTN_CHARS = '0123456789ABCDEFabcdef+x=[]{}|/<>?!#$%';
+  function rbchar() { return BTN_CHARS[Math.random() * BTN_CHARS.length | 0]; }
 
   function buildLabel(btn, label) {
     btn.innerHTML = '';
@@ -279,7 +282,7 @@
     setInterval(() => {
       for (const s of btn.querySelectorAll('span')) {
         if (Math.random() < 0.14) {
-          s.textContent = rchar();
+          s.textContent = rbchar();
           setTimeout(() => { s.textContent = s.dataset.orig; }, 80);
         }
       }
