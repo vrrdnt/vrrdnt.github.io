@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>vrrdnt.dev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/vs-tools/img/favicon/favicon.png">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-dark: #1a1a2e;
+      --bg-card: #16213e;
+      --bg-card-hover: #1a2744;
+      --accent: #e2a04a;
+      --accent-glow: #e2a04a44;
+      --accent-bright: #f0b960;
+      --text: #e0e0e0;
+      --text-dim: #8892a4;
+      --text-bright: #ffffff;
+      --border: #2a3a5c;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse at 20% 0%, #1e2a4a 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 100%, #2a1a1a 0%, transparent 50%);
+    }
+
+    a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
+    a:hover { color: var(--accent-bright); }
+
+    .page {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 4rem;
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .hero h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+      text-shadow: 0 0 60px var(--accent-glow);
+    }
+
+    .hero p {
+      color: var(--text-dim);
+      font-size: 1.1rem;
+      margin-top: 0.6rem;
+      font-weight: 300;
+    }
+
+    /* Section */
+    .section { margin-bottom: 3rem; }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-header h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-bright);
+    }
+
+    .section-header span {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      font-weight: 400;
+    }
+
+    /* Tool grid */
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .tool-card {
+      display: block;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tool-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--card-accent, var(--accent));
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .tool-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--card-accent, var(--accent));
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+      text-decoration: none;
+    }
+
+    .tool-card:hover::before { opacity: 1; }
+
+    .tool-card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .tool-card-icon {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    .tool-card-name {
+      font-family: 'Cinzel', serif;
+      font-weight: 600;
+      font-size: 1.05rem;
+      color: var(--text-bright);
+    }
+
+    .tool-card-desc {
+      font-size: 0.875rem;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    /* Coming soon cards */
+    .tool-card.coming-soon {
+      opacity: 0.45;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .tool-card.coming-soon .tool-card-name::after {
+      content: ' — soon';
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 400;
+      color: var(--text-dim);
+      letter-spacing: 0.04em;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 700px) {
+      .page { padding: 2rem 1rem 3rem; }
+      .hero h1 { font-size: 2rem; }
+      .tool-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <div class="hero">
+      <h1>vrrdnt.dev</h1>
+      <p>Tools and utilities, mostly for games.</p>
+    </div>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Vintage Story</h2>
+        <span>calculators &amp; planners</span>
+      </div>
+      <div class="tool-grid" id="vsGrid"></div>
+    </section>
+
+    <footer>
+      <p>vrrdnt &mdash; <a href="https://github.com/vrrdnt">github.com/vrrdnt</a></p>
+    </footer>
+
+  </div>
+
+  <script>
+    const VS_TOOLS = [
+      {
+        name: 'Alloy Calculator',
+        href: '/vs-tools/alloys.html',
+        accent: '#cd7f32',
+        icon: '/vs-tools/img/Ingot-tinbronze.png',
+        desc: 'Calculate perfect metal ratios for bronze, brass, electrum, and more.'
+      },
+      {
+        name: 'Meal Planner',
+        href: '/vs-tools/meals.html',
+        accent: '#4ade80',
+        icon: '/vs-tools/img/food/cookingpot.png',
+        desc: 'Plan optimal meals for balanced nutrition across all five food categories.'
+      },
+      {
+        name: 'Armor Calculator',
+        href: '/vs-tools/armor.html',
+        accent: '#60a5fa',
+        icon: '/vs-tools/img/armor/chain.png',
+        desc: 'Compare armor sets side-by-side and calculate damage reduction.'
+      },
+      {
+        name: 'Crop Rotation Planner',
+        href: '/vs-tools/farming.html',
+        accent: '#a3e635',
+        icon: '/vs-tools/img/farming/carrot.png',
+        desc: 'Plan crop rotations to maintain soil N/P/K fertility across seasons.'
+      },
+      {
+        name: 'Steel Making Tracker',
+        href: '/vs-tools/steel.html',
+        accent: '#f87171',
+        icon: '/vs-tools/img/steel/ingot-steel.png',
+        desc: 'Track your progress from iron ore to steel and calculate materials needed.'
+      },
+    ];
+
+    const grid = document.getElementById('vsGrid');
+    for (const tool of VS_TOOLS) {
+      const a = document.createElement('a');
+      a.className = 'tool-card';
+      a.href = tool.href;
+      a.style.setProperty('--card-accent', tool.accent);
+      a.innerHTML = `
+        <div class="tool-card-header">
+          <img class="tool-card-icon" src="${tool.icon}" alt="" width="40" height="40"
+               onerror="this.style.display='none'">
+          <span class="tool-card-name">${tool.name}</span>
+        </div>
+        <div class="tool-card-desc">${tool.desc}</div>
+      `;
+      grid.appendChild(a);
+    }
+  </script>
+</body>
+</html>
