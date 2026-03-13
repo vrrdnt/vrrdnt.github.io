@@ -32,26 +32,37 @@
       color: var(--text);
       line-height: 1.6;
       min-height: 100vh;
-      background-image: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0, 0, 0, 0.06) 2px,
-        rgba(0, 0, 0, 0.06) 4px
-      );
+    }
+
+    #ascii-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
     }
 
     a { color: var(--accent-hi); text-decoration: none; transition: color 0.15s; }
     a:hover { color: var(--text-bright); }
 
     .page {
+      position: relative;
+      z-index: 1;
       max-width: 860px;
       margin: 0 auto;
       padding: 4rem 2rem 5rem;
     }
 
     /* ── Header ── */
-    .header { margin-bottom: 3.5rem; }
+    .header {
+      margin-bottom: 3.5rem;
+    }
+
+    .header-inner {
+      display: inline-block;
+      background: rgba(7, 7, 6, 0.82);
+      padding: 1.5rem 1.25rem;
+    }
 
     .header h1 {
       font-size: 2.6rem;
@@ -120,12 +131,13 @@
       display: block;
       padding: 1rem 1rem 1rem 1.1rem;
       border-left: 2px solid var(--border);
+      background: rgba(7, 7, 6, 0.78);
       text-decoration: none;
       transition: background 0.15s, border-color 0.15s;
     }
 
     .entry:hover {
-      background: var(--bg-hover);
+      background: rgba(17, 19, 15, 0.92);
       border-left-color: var(--accent);
     }
 
@@ -184,11 +196,14 @@
   </style>
 </head>
 <body>
+  <canvas id="ascii-bg" aria-hidden="true"></canvas>
   <div class="page">
 
     <header class="header">
-      <h1>vrrdnt.dev<span class="cursor"></span></h1>
-      <p class="tagline">tools and utilities, mostly for games</p>
+      <div class="header-inner">
+        <h1>vrrdnt.dev<span class="cursor"></span></h1>
+        <p class="tagline">tools and utilities, mostly for games</p>
+      </div>
     </header>
 
     <hr class="rule">
@@ -281,5 +296,6 @@
       list.appendChild(a);
     }
   </script>
+  <script src="ascii-bg.js"></script>
 </body>
 </html>
