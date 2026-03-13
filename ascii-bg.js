@@ -15,132 +15,142 @@
   const FPS          = 60;
   const FRAME_MS     = 1000 / FPS;
 
-  // Matrix rain tunables
-  const STREAM_SPEED_MIN = 0.25; // rows per frame
-  const STREAM_SPEED_MAX = 0.65;
-  const STREAM_LEN_MIN   = 10;   // trail length in cells
-  const STREAM_LEN_MAX   = 24;
-  const COL_SPAWN_MIN    = 20;   // frames between spawns per column
-  const COL_SPAWN_MAX    = 120;
-  const HEAD_ALPHA       = 0.92; // alpha of the leading head cell
+  // Radiation tunables
+  const BASE_A = 0.04; // base alpha of idle characters
+
+  // Cloud-chamber streak tunables
+  const STREAK_SPEED_MIN  = 2.0;   // cells per frame
+  const STREAK_SPEED_MAX  = 5.5;
+  const STREAK_HEAD_A     = 0.80;  // alpha stamped at the head cell each frame
+  const STREAK_DECAY      = 0.055; // alpha lost per frame (trail ~15 frames)
+  const STREAK_SPAWN_PROB = 0.022; // chance per frame to spawn a new streak
+  const STREAK_MAX        = 7;     // max simultaneous streaks
 
   // GoL tunables
-  const GOL_ALIVE_A  = 0.32;   // base alpha for alive cells
-  const BASE_A       = 0.04;   // base alpha for dead/idle cells
-  const GOL_SEED     = 0.30;   // initial alive probability
-  const GOL_RESEED   = 0.04;   // reseed threshold (fraction of cells alive)
-  const GOL_TICK     = 4;      // advance GoL state every N rendered frames
+  const GOL_ALIVE_A = 0.32;  // base alpha for alive cells
+  const GOL_SEED    = 0.30;  // initial alive probability
+  const GOL_RESEED  = 0.04;  // reseed threshold (fraction of cells alive)
+  const GOL_TICK    = 4;     // advance GoL state every N rendered frames
 
   let canvas, ctx;
   let cols, rows, cells;
   let mouseX = -9999, mouseY = -9999;
   let lastTs = 0;
-  let mode; // 'ascii' | 'gol'
-
-  // Matrix rain state
-  let streams = [];
-  let colCooldown = [];
+  let mode; // 'radiation' | 'gol'
 
   // GoL double-buffer (Uint8Array for speed)
   let golCur, golNxt;
   let golFrame = 0;
 
+  // Cloud-chamber streaks
+  let streakA;   // Float32Array — per-cell streak alpha contribution
+  let streaks = [];
+
   // ── Helpers ────────────────────────────────────────────────────────────────
 
   function rchar() { return CHARS[Math.random() * CHARS.length | 0]; }
 
-  // ── Matrix rain ─────────────────────────────────────────────────────────────
+  // ── Cloud-chamber streaks ──────────────────────────────────────────────────
 
-  function initStreams() {
-    streams = [];
-    colCooldown = Array.from({ length: cols }, () => (Math.random() * COL_SPAWN_MAX) | 0);
+  function initStreakBuffer() {
+    streakA = new Float32Array(cols * rows);
+    streaks = [];
   }
 
-  function updateStreams() {
-    // Spawn new streams
-    for (let col = 0; col < cols; col++) {
-      if (colCooldown[col] > 0) { colCooldown[col]--; continue; }
-      // Don't spawn a new stream while one is still near the top of this column
-      const tooClose = streams.some(s => s.col === col && s.headY < STREAM_LEN_MAX + 2);
-      if (!tooClose) {
-        streams.push({
-          col,
-          headY: 0,
-          speed: STREAM_SPEED_MIN + Math.random() * (STREAM_SPEED_MAX - STREAM_SPEED_MIN),
-          len:   (STREAM_LEN_MIN  + Math.random() * (STREAM_LEN_MAX  - STREAM_LEN_MIN))  | 0,
-          rc:    {}, // row -> char
-        });
-        colCooldown[col] = (COL_SPAWN_MIN + Math.random() * (COL_SPAWN_MAX - COL_SPAWN_MIN)) | 0;
+  function updateStreaks() {
+    // Fade all trail cells
+    for (let i = 0; i < streakA.length; i++) {
+      if (streakA[i] > 0) {
+        streakA[i] -= STREAK_DECAY;
+        if (streakA[i] < 0) streakA[i] = 0;
       }
     }
 
-    // Advance all streams
-    for (let i = streams.length - 1; i >= 0; i--) {
-      const s = streams[i];
-      s.headY += s.speed;
-      const hr = s.headY | 0;
+    // Spawn a new streak
+    if (streaks.length < STREAK_MAX && Math.random() < STREAK_SPAWN_PROB) {
+      // Start on a random edge
+      const side = Math.random() * 4 | 0;
+      let x, y;
+      if      (side === 0) { x = Math.random() * cols; y = 0; }
+      else if (side === 1) { x = cols;                  y = Math.random() * rows; }
+      else if (side === 2) { x = Math.random() * cols; y = rows; }
+      else                 { x = 0;                    y = Math.random() * rows; }
 
-      // Head char changes rapidly
-      s.rc[hr] = rchar();
+      // Aim roughly toward a random interior point
+      const tx = cols * (0.25 + Math.random() * 0.5);
+      const ty = rows * (0.25 + Math.random() * 0.5);
+      const dist = Math.hypot(tx - x, ty - y) || 1;
+      const speed = STREAK_SPEED_MIN + Math.random() * (STREAK_SPEED_MAX - STREAK_SPEED_MIN);
+      streaks.push({ x, y, dx: (tx - x) / dist, dy: (ty - y) / dist, speed });
+    }
 
-      // Assign and occasionally mutate trail chars
-      for (let d = 1; d < s.len; d++) {
-        const r = hr - d;
-        if (r < 0) continue;
-        if (!s.rc[r])                    s.rc[r] = rchar();
-        else if (Math.random() < 0.04)   s.rc[r] = rchar();
+    // Advance each streak
+    for (let i = streaks.length - 1; i >= 0; i--) {
+      const s = streaks[i];
+      s.x += s.dx * s.speed;
+      s.y += s.dy * s.speed;
+      const col = s.x | 0;
+      const row = s.y | 0;
+      if (col >= 0 && col < cols && row >= 0 && row < rows) {
+        streakA[row * cols + col] = STREAK_HEAD_A;
       }
-
-      // Prune chars that have scrolled above the tail
-      for (const r in s.rc) {
-        if (+r < hr - s.len - 1) delete s.rc[r];
+      if (s.x < -1 || s.x > cols + 1 || s.y < -1 || s.y > rows + 1) {
+        streaks.splice(i, 1);
       }
-
-      // Remove streams whose tail is fully off the bottom
-      if (s.headY - s.len > rows + 1) streams.splice(i, 1);
     }
   }
 
-  function drawMatrix() {
+  // ── Radiation ───────────────────────────────────────────────────────────────
+
+  function updateRadiation() {
+    updateStreaks();
+
+    for (let i = 0; i < cells.length; i++) {
+      const c = cells[i];
+
+      // Character cycling
+      if (--c.t <= 0) {
+        c.ch = rchar();
+        c.t  = (8 + Math.random() * 70) | 0;
+      }
+
+      // Random flash trigger
+      if (c.flash > 0) {
+        c.flash -= FLASH_DECAY;
+        if (c.flash < 0) c.flash = 0;
+      } else if (Math.random() < FLASH_CHANCE) {
+        c.flash = FLASH_PEAK;
+      }
+    }
+  }
+
+  function drawRadiation() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.font         = `${FONT_SZ}px "JetBrains Mono", monospace`;
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
 
-    for (const s of streams) {
-      const hr = s.headY | 0;
-      const cx = s.col * CELL + CELL * 0.5;
+    for (let row = 0; row < rows; row++) {
+      const cy = row * CELL + CELL * 0.5;
+      for (let col = 0; col < cols; col++) {
+        const cx = col * CELL + CELL * 0.5;
+        const c  = cells[row * cols + col];
 
-      for (let d = 0; d <= s.len; d++) {
-        const row = hr - d;
-        if (row < 0 || row >= rows) continue;
-
-        const cy  = row * CELL + CELL * 0.5;
-        const ch  = s.rc[row] || ' ';
-        const idx = row * cols + s.col;
-
-        if (d === 0) {
-          // Head: near-white, bright
-          ctx.fillStyle = `rgba(200,255,210,${HEAD_ALPHA})`;
-          ctx.fillText(ch, cx, cy);
-          continue;
-        }
-
-        // Trail: fade with distance from head
-        let a = 0.7 * Math.pow(1 - d / s.len, 1.8);
-
-        // Mouse glow
+        // Mouse proximity glow
         const md = Math.hypot(cx - mouseX, cy - mouseY);
-        a += md < MOUSE_R ? MOUSE_PEAK * Math.pow(1 - md / MOUSE_R, 1.8) : 0;
+        let a = BASE_A + (md < MOUSE_R
+          ? MOUSE_PEAK * Math.pow(1 - md / MOUSE_R, 1.8)
+          : 0);
 
-        // Flash
-        if (cells[idx]) a += cells[idx].flash;
+        // Random flash + streak trail
+        a += c.flash;
+        a += streakA[row * cols + col];
 
         if (a < 0.008) continue;
         if (a > 0.88)  a = 0.88;
 
         ctx.fillStyle = `rgba(0,200,71,${a.toFixed(3)})`;
-        ctx.fillText(ch, cx, cy);
+        ctx.fillText(c.ch, cx, cy);
       }
     }
   }
@@ -220,32 +230,31 @@
     for (let i = 0; i < n; i++) {
       cells[i] = { ch: rchar(), t: (Math.random() * 70) | 0, flash: 0 };
     }
-    if (mode === 'ascii') initStreams();
-    if (mode === 'gol')   initGol();
+    if (mode === 'radiation') initStreakBuffer();
+    if (mode === 'gol')       initGol();
   }
 
   function update() {
-    if (mode === 'ascii') {
-      updateStreams();
+    if (mode === 'radiation') {
+      updateRadiation();
     } else {
-      if (++golFrame >= GOL_TICK) { golFrame = 0; stepGol(); }
-    }
-
-    // Random flashes — GoL only flashes alive cells; matrix flashes are visible only on trail cells
-    for (let i = 0; i < cells.length; i++) {
-      const c = cells[i];
-      if (c.flash > 0) {
-        c.flash -= FLASH_DECAY;
-        if (c.flash < 0) c.flash = 0;
-      } else if (mode === 'ascii' || golCur[i]) {
-        if (Math.random() < FLASH_CHANCE) c.flash = FLASH_PEAK;
+      // Flash on alive GoL cells
+      for (let i = 0; i < cells.length; i++) {
+        const c = cells[i];
+        if (c.flash > 0) {
+          c.flash -= FLASH_DECAY;
+          if (c.flash < 0) c.flash = 0;
+        } else if (golCur[i] && Math.random() < FLASH_CHANCE) {
+          c.flash = FLASH_PEAK;
+        }
       }
+      if (++golFrame >= GOL_TICK) { golFrame = 0; stepGol(); }
     }
   }
 
   function draw() {
-    if (mode === 'ascii') drawMatrix();
-    else                  drawGol();
+    if (mode === 'radiation') drawRadiation();
+    else                      drawGol();
   }
 
   function loop(ts) {
@@ -258,7 +267,7 @@
 
   // ── Toggle button ────────────────────────────────────────────────────────────
 
-  const TOGGLE_LABELS = { ascii: '[ life ]', gol: '[ matrix ]' };
+  const TOGGLE_LABELS = { radiation: '[ life ]', gol: '[ death ]' };
   // ASCII-only pool for button glitch — avoids double-width CJK glyphs shifting layout
   const BTN_CHARS = '0123456789ABCDEFabcdef+x=[]{}|/<>?!#$%';
   function rbchar() { return BTN_CHARS[Math.random() * BTN_CHARS.length | 0]; }
@@ -289,9 +298,9 @@
     }, 80);
 
     btn.addEventListener('click', () => {
-      mode = mode === 'ascii' ? 'gol' : 'ascii';
-      if (mode === 'gol')   { initGol();     golFrame = 0; }
-      if (mode === 'ascii') { initStreams(); }
+      mode = mode === 'radiation' ? 'gol' : 'radiation';
+      if (mode === 'gol')       { initGol(); golFrame = 0; }
+      if (mode === 'radiation') { initStreakBuffer(); }
       buildLabel(btn, TOGGLE_LABELS[mode]);
     });
   }
@@ -303,7 +312,7 @@
     if (!canvas) return;
     ctx = canvas.getContext('2d');
 
-    mode = Math.random() < 0.5 ? 'ascii' : 'gol';
+    mode = Math.random() < 0.5 ? 'radiation' : 'gol';
 
     resize();
     window.addEventListener('resize', resize);
