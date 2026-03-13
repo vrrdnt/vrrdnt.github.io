@@ -267,7 +267,7 @@
 
   // ── Toggle button ────────────────────────────────────────────────────────────
 
-  const TOGGLE_LABELS = { radiation: '[ life ]', gol: '[ radiation ]' };
+  const TOGGLE_LABELS = { radiation: '[ life ]', gol: '[ death ]' };
   // ASCII-only pool for button glitch — avoids double-width CJK glyphs shifting layout
   const BTN_CHARS = '0123456789ABCDEFabcdef+x=[]{}|/<>?!#$%';
   function rbchar() { return BTN_CHARS[Math.random() * BTN_CHARS.length | 0]; }
