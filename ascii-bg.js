@@ -7,8 +7,6 @@
   // Shared tunables
   const CELL         = 20;     // grid cell size px
   const FONT_SZ      = 11;     // font size px
-  const MOUSE_R      = 440;    // mouse glow radius px
-  const MOUSE_PEAK   = 0.46;   // max extra alpha near mouse
   const FLASH_CHANCE = 0.0004; // probability per cell per frame of triggering a flash
   const FLASH_PEAK   = 1;      // peak alpha of a flash
   const FLASH_DECAY  = 0.02;   // alpha lost per frame during flash decay
@@ -34,7 +32,6 @@
 
   let canvas, ctx;
   let cols, rows, cells;
-  let mouseX = -9999, mouseY = -9999;
   let lastTs = 0;
   let mode; // 'radiation' | 'gol'
 
@@ -136,11 +133,7 @@
         const cx = col * CELL + CELL * 0.5;
         const c  = cells[row * cols + col];
 
-        // Mouse proximity glow
-        const md = Math.hypot(cx - mouseX, cy - mouseY);
-        let a = BASE_A + (md < MOUSE_R
-          ? MOUSE_PEAK * Math.pow(1 - md / MOUSE_R, 1.8)
-          : 0);
+        let a = BASE_A;
 
         // Random flash + streak trail
         a += c.flash;
@@ -316,11 +309,6 @@
 
     resize();
     window.addEventListener('resize', resize);
-    window.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-    });
-
     window.addEventListener('click', (e) => {
       if (mode !== 'gol') return;
       if (e.target.closest('#bg-toggle')) return;
