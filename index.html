@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>vrrdnt.dev</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -12,15 +13,15 @@
     :root {
       --bg:          #070706;
       --bg-panel:    #0d0d0b;
-      --bg-hover:    #131310;
-      --accent:      #c0581c;
-      --accent-hi:   #d97040;
-      --accent-dim:  #6b3010;
+      --bg-hover:    #11130f;
+      --accent:      #00c847;
+      --accent-hi:   #29e866;
+      --accent-dim:  #0a5c22;
       --text:        #b4ac9c;
       --text-bright: #ddd4c0;
       --text-dim:    #484038;
-      --border:      #1c1a16;
-      --border-mid:  #2a2620;
+      --border:      #161c14;
+      --border-mid:  #242e20;
     }
 
     html { font-size: 16px; }
@@ -31,7 +32,6 @@
       color: var(--text);
       line-height: 1.6;
       min-height: 100vh;
-      /* subtle scanline texture */
       background-image: repeating-linear-gradient(
         0deg,
         transparent,
@@ -51,9 +51,7 @@
     }
 
     /* ── Header ── */
-    .header {
-      margin-bottom: 3.5rem;
-    }
+    .header { margin-bottom: 3.5rem; }
 
     .header h1 {
       font-size: 2.6rem;
@@ -61,7 +59,7 @@
       color: var(--accent);
       letter-spacing: -0.01em;
       line-height: 1;
-      text-shadow: 0 0 40px rgba(192, 88, 28, 0.35);
+      text-shadow: 0 0 40px rgba(0, 200, 71, 0.3);
     }
 
     .cursor {
@@ -95,9 +93,7 @@
     }
 
     /* ── Section ── */
-    .section {
-      margin-bottom: 2.5rem;
-    }
+    .section { margin-bottom: 2.5rem; }
 
     .section-label {
       font-size: 0.72rem;
@@ -113,28 +109,27 @@
       color: var(--accent-dim);
     }
 
-    /* ── Tool list ── */
-    .tool-list {
+    /* ── Entry list ── */
+    .entry-list {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
       gap: 2px;
     }
 
-    .tool-entry {
+    .entry {
       display: block;
       padding: 1rem 1rem 1rem 1.1rem;
       border-left: 2px solid var(--border);
       text-decoration: none;
       transition: background 0.15s, border-color 0.15s;
-      position: relative;
     }
 
-    .tool-entry:hover {
+    .entry:hover {
       background: var(--bg-hover);
       border-left-color: var(--accent);
     }
 
-    .tool-entry-name {
+    .entry-name {
       font-size: 0.9rem;
       font-weight: 500;
       color: var(--text-bright);
@@ -144,7 +139,7 @@
       transition: color 0.15s;
     }
 
-    .tool-entry-name::before {
+    .entry-name::before {
       content: '›';
       color: var(--accent-dim);
       font-size: 1rem;
@@ -152,16 +147,20 @@
       transition: color 0.15s;
     }
 
-    .tool-entry:hover .tool-entry-name {
-      color: #ffffff;
+    .entry:hover .entry-name       { color: #ffffff; }
+    .entry:hover .entry-name::before { color: var(--accent-hi); }
+
+    .entry-meta {
+      margin-top: 0.1rem;
+      padding-left: 1.1rem;
+      font-size: 0.68rem;
+      font-weight: 400;
+      color: var(--accent-dim);
+      letter-spacing: 0.04em;
     }
 
-    .tool-entry:hover .tool-entry-name::before {
-      color: var(--accent-hi);
-    }
-
-    .tool-entry-desc {
-      margin-top: 0.3rem;
+    .entry-desc {
+      margin-top: 0.25rem;
       padding-left: 1.1rem;
       font-size: 0.75rem;
       font-weight: 300;
@@ -180,7 +179,7 @@
     @media (max-width: 640px) {
       .page { padding: 2.5rem 1.25rem 3.5rem; }
       .header h1 { font-size: 1.8rem; }
-      .tool-list { grid-template-columns: 1fr; }
+      .entry-list { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -195,8 +194,29 @@
     <hr class="rule">
 
     <section class="section">
+      <p class="section-label">projects</p>
+      <div class="entry-list">
+
+        <a class="entry" href="https://getstoryforge.app">
+          <div class="entry-name">StoryForge</div>
+          <div class="entry-meta">C# · desktop</div>
+          <div class="entry-desc">Vintage Story launcher — manage game versions, modpacks, servers, and accounts from one app.</div>
+        </a>
+
+        <a class="entry" href="https://github.com/vrrdnt/youtube-collector">
+          <div class="entry-name">youtube-collector</div>
+          <div class="entry-meta">C# · cli tool</div>
+          <div class="entry-desc">Download YouTube videos and prep them for music libraries. Wraps yt-dlp and ffmpeg into a clean workflow.</div>
+        </a>
+
+      </div>
+    </section>
+
+    <hr class="rule">
+
+    <section class="section">
       <p class="section-label">vintage story</p>
-      <div class="tool-list" id="vsTools"></div>
+      <div class="entry-list" id="vsTools"></div>
     </section>
 
     <hr class="rule">
@@ -209,21 +229,21 @@
 
   <script>
     const VS_TOOLS = [
-      { name: 'Alloy Calculator',      href: '/vs-tools/alloys.html',  desc: 'Calculate perfect metal ratios for bronze, brass, electrum, and more.' },
-      { name: 'Meal Planner',           href: '/vs-tools/meals.html',   desc: 'Plan optimal meals for balanced nutrition across all five food categories.' },
-      { name: 'Armor Calculator',       href: '/vs-tools/armor.html',   desc: 'Compare armor sets side-by-side and calculate damage reduction.' },
-      { name: 'Crop Rotation Planner',  href: '/vs-tools/farming.html', desc: 'Plan crop rotations to maintain soil N/P/K fertility across seasons.' },
-      { name: 'Steel Making Tracker',   href: '/vs-tools/steel.html',   desc: 'Track your progress from iron ore to steel and calculate materials needed.' },
+      { name: 'Alloy Calculator',     href: '/vs-tools/alloys.html',  desc: 'Calculate perfect metal ratios for bronze, brass, electrum, and more.' },
+      { name: 'Meal Planner',          href: '/vs-tools/meals.html',   desc: 'Plan optimal meals for balanced nutrition across all five food categories.' },
+      { name: 'Armor Calculator',      href: '/vs-tools/armor.html',   desc: 'Compare armor sets side-by-side and calculate damage reduction.' },
+      { name: 'Crop Rotation Planner', href: '/vs-tools/farming.html', desc: 'Plan crop rotations to maintain soil N/P/K fertility across seasons.' },
+      { name: 'Steel Making Tracker',  href: '/vs-tools/steel.html',   desc: 'Track progress from iron ore to steel and calculate materials needed.' },
     ];
 
     const list = document.getElementById('vsTools');
     for (const tool of VS_TOOLS) {
       const a = document.createElement('a');
-      a.className = 'tool-entry';
+      a.className = 'entry';
       a.href = tool.href;
       a.innerHTML = `
-        <div class="tool-entry-name">${tool.name}</div>
-        <div class="tool-entry-desc">${tool.desc}</div>
+        <div class="entry-name">${tool.name}</div>
+        <div class="entry-desc">${tool.desc}</div>
       `;
       list.appendChild(a);
     }

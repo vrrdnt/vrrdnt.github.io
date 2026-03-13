@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s \"https://api.github.com/users/vrrdnt/repos?sort=updated&per_page=50\")"
+    ]
+  }
+}
