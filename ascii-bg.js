@@ -13,7 +13,7 @@
   const FLASH_CHANCE = 0.0004; // probability per cell per frame of triggering a flash
   const FLASH_PEAK   = 1;      // peak alpha of a flash
   const FLASH_DECAY  = 0.02;   // alpha lost per frame during flash decay
-  const FPS          = 90;
+  const FPS          = 60;
   const FRAME_MS     = 1000 / FPS;
 
   // GoL tunables
