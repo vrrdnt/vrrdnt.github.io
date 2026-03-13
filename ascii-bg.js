@@ -18,6 +18,14 @@
   // Radiation tunables
   const BASE_A = 0.04; // base alpha of idle characters
 
+  // Cloud-chamber streak tunables
+  const STREAK_SPEED_MIN  = 2.0;   // cells per frame
+  const STREAK_SPEED_MAX  = 5.5;
+  const STREAK_HEAD_A     = 0.80;  // alpha stamped at the head cell each frame
+  const STREAK_DECAY      = 0.055; // alpha lost per frame (trail ~15 frames)
+  const STREAK_SPAWN_PROB = 0.022; // chance per frame to spawn a new streak
+  const STREAK_MAX        = 7;     // max simultaneous streaks
+
   // GoL tunables
   const GOL_ALIVE_A = 0.32;  // base alpha for alive cells
   const GOL_SEED    = 0.30;  // initial alive probability
@@ -34,13 +42,69 @@
   let golCur, golNxt;
   let golFrame = 0;
 
+  // Cloud-chamber streaks
+  let streakA;   // Float32Array — per-cell streak alpha contribution
+  let streaks = [];
+
   // ── Helpers ────────────────────────────────────────────────────────────────
 
   function rchar() { return CHARS[Math.random() * CHARS.length | 0]; }
 
+  // ── Cloud-chamber streaks ──────────────────────────────────────────────────
+
+  function initStreakBuffer() {
+    streakA = new Float32Array(cols * rows);
+    streaks = [];
+  }
+
+  function updateStreaks() {
+    // Fade all trail cells
+    for (let i = 0; i < streakA.length; i++) {
+      if (streakA[i] > 0) {
+        streakA[i] -= STREAK_DECAY;
+        if (streakA[i] < 0) streakA[i] = 0;
+      }
+    }
+
+    // Spawn a new streak
+    if (streaks.length < STREAK_MAX && Math.random() < STREAK_SPAWN_PROB) {
+      // Start on a random edge
+      const side = Math.random() * 4 | 0;
+      let x, y;
+      if      (side === 0) { x = Math.random() * cols; y = 0; }
+      else if (side === 1) { x = cols;                  y = Math.random() * rows; }
+      else if (side === 2) { x = Math.random() * cols; y = rows; }
+      else                 { x = 0;                    y = Math.random() * rows; }
+
+      // Aim roughly toward a random interior point
+      const tx = cols * (0.25 + Math.random() * 0.5);
+      const ty = rows * (0.25 + Math.random() * 0.5);
+      const dist = Math.hypot(tx - x, ty - y) || 1;
+      const speed = STREAK_SPEED_MIN + Math.random() * (STREAK_SPEED_MAX - STREAK_SPEED_MIN);
+      streaks.push({ x, y, dx: (tx - x) / dist, dy: (ty - y) / dist, speed });
+    }
+
+    // Advance each streak
+    for (let i = streaks.length - 1; i >= 0; i--) {
+      const s = streaks[i];
+      s.x += s.dx * s.speed;
+      s.y += s.dy * s.speed;
+      const col = s.x | 0;
+      const row = s.y | 0;
+      if (col >= 0 && col < cols && row >= 0 && row < rows) {
+        streakA[row * cols + col] = STREAK_HEAD_A;
+      }
+      if (s.x < -1 || s.x > cols + 1 || s.y < -1 || s.y > rows + 1) {
+        streaks.splice(i, 1);
+      }
+    }
+  }
+
   // ── Radiation ───────────────────────────────────────────────────────────────
 
   function updateRadiation() {
+    updateStreaks();
+
     for (let i = 0; i < cells.length; i++) {
       const c = cells[i];
 
@@ -78,8 +142,9 @@
           ? MOUSE_PEAK * Math.pow(1 - md / MOUSE_R, 1.8)
           : 0);
 
-        // Random flash
+        // Random flash + streak trail
         a += c.flash;
+        a += streakA[row * cols + col];
 
         if (a < 0.008) continue;
         if (a > 0.88)  a = 0.88;
@@ -165,7 +230,8 @@
     for (let i = 0; i < n; i++) {
       cells[i] = { ch: rchar(), t: (Math.random() * 70) | 0, flash: 0 };
     }
-    if (mode === 'gol') initGol();
+    if (mode === 'radiation') initStreakBuffer();
+    if (mode === 'gol')       initGol();
   }
 
   function update() {
@@ -233,7 +299,8 @@
 
     btn.addEventListener('click', () => {
       mode = mode === 'radiation' ? 'gol' : 'radiation';
-      if (mode === 'gol') { initGol(); golFrame = 0; }
+      if (mode === 'gol')       { initGol(); golFrame = 0; }
+      if (mode === 'radiation') { initStreakBuffer(); }
       buildLabel(btn, TOGGLE_LABELS[mode]);
     });
   }
