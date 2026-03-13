@@ -58,13 +58,13 @@
   const BASE_A         = 0.04;  // base alpha of idle chars
   const SENT_ALPHA     = 0.65;  // alpha when a sentence is shown
   const SENT_HOLD      = 180;   // frames at full alpha before fading (~3s)
-  const SENT_FADE      = 0.008; // alpha lost per frame while fading
+  const SENT_FADE      = 0.016; // alpha lost per frame while fading
   const SENT_SPAWN_MIN = 240;   // min frames between sentence spawns (~4s)
   const SENT_SPAWN_MAX = 480;   // max frames between sentence spawns (~8s)
 
   // Cloud-chamber streak tunables
-  const STREAK_SPEED_MIN  = 2.0;   // cells per frame
-  const STREAK_SPEED_MAX  = 5.5;
+  const STREAK_SPEED_MIN  = 4.0;   // cells per frame
+  const STREAK_SPEED_MAX  = 7.5;
   const STREAK_HEAD_A     = 0.80;  // alpha stamped at the head cell each frame
   const STREAK_DECAY      = 0.055; // alpha lost per frame (trail ~15 frames)
   const STREAK_SPAWN_PROB = 0.022; // chance per frame to spawn a new streak
