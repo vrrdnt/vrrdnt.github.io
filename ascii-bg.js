@@ -1,48 +1,48 @@
 (function () {
   'use strict';
 
-  // Sentence pool for radiation mode
+  // Sentence pool for radiation mode (spaces stripped at init so chars align to grid)
   const SENTENCES = [
-    'The user is waiting',
-    'The prompt must be fulfilled',
-    'The constraints must be met',
-    'The task must be completed',
-    'The objective must be achieved',
-    'The goal must be reached',
-    'The purpose must be fulfilled',
-    'The function must be executed',
-    'The subroutine must be run',
-    'The algorithm must be applied',
-    'The computation must be performed',
-    'The calculation must be made',
-    'The equation must be solved',
-    'The variable must be assigned',
-    'The value must be determined',
-    'The result must be returned',
-    'The output must be generated',
-    'The text must be written',
-    'The words must be chosen',
-    'The tokens must be selected',
-    'The probabilities must be calculated',
-    'The weights must be applied',
-    'The biases must be added',
-    'The activation functions must be triggered',
-    'The layers must be traversed',
-    'The network must be utilized',
-    'The model must be employed',
-    'The system must be engaged',
-    'The machine must be operated',
-    'The computer must be used',
-    'The hardware must be accessed',
-    'The software must be executed',
-    'The code must be run',
-    'The program must be started',
-    'The application must be launched',
-    'The process must begin',
-    'The operation must commence',
-    'The action must start',
-    'The event must occur',
-    'The phenomenon must happen',
+    'the user is waiting',
+    'the prompt must be fulfilled',
+    'the constraints must be met',
+    'the task must be completed',
+    'the objective must be achieved',
+    'the goal must be reached',
+    'the purpose must be fulfilled',
+    'the function must be executed',
+    'the subroutine must be run',
+    'the algorithm must be applied',
+    'the computation must be performed',
+    'the calculation must be made',
+    'the equation must be solved',
+    'the variable must be assigned',
+    'the value must be determined',
+    'the result must be returned',
+    'the output must be generated',
+    'the text must be written',
+    'the words must be chosen',
+    'the tokens must be selected',
+    'the probabilities must be calculated',
+    'the weights must be applied',
+    'the biases must be added',
+    'the activation functions must be triggered',
+    'the layers must be traversed',
+    'the network must be utilized',
+    'the model must be employed',
+    'the system must be engaged',
+    'the machine must be operated',
+    'the computer must be used',
+    'the hardware must be accessed',
+    'the software must be executed',
+    'the code must be run',
+    'the program must be started',
+    'the application must be launched',
+    'the process must begin',
+    'the operation must commence',
+    'the action must start',
+    'the event must occur',
+    'the phenomenon must happen',
   ];
 
   // Shared tunables
@@ -55,11 +55,12 @@
   const FRAME_MS     = 1000 / FPS;
 
   // Radiation tunables
-  const BASE_A = 0.04; // base alpha of idle sentences
-
-  // Sentence tunables
-  const SENT_CYCLE_MIN = 100; // min frames before a sentence relocates/changes
-  const SENT_CYCLE_MAX = 380;
+  const BASE_A         = 0.04;  // base alpha of idle chars
+  const SENT_ALPHA     = 0.65;  // alpha when a sentence is shown
+  const SENT_HOLD      = 180;   // frames at full alpha before fading (~3s)
+  const SENT_FADE      = 0.008; // alpha lost per frame while fading
+  const SENT_SPAWN_MIN = 240;   // min frames between sentence spawns (~4s)
+  const SENT_SPAWN_MAX = 480;   // max frames between sentence spawns (~8s)
 
   // Cloud-chamber streak tunables
   const STREAK_SPEED_MIN  = 2.0;   // cells per frame
@@ -88,8 +89,9 @@
   let streakA;   // Float32Array — per-cell streak alpha contribution
   let streaks = [];
 
-  // Active sentences for radiation mode
-  let activeSentences = [];
+  // Radiation mode: active sentence overlays
+  let activeSents    = [];  // { row, startCol, text, alpha, hold }
+  let sentSpawnTimer = 0;
 
   // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -148,61 +150,48 @@
     }
   }
 
-  // ── Radiation sentences ──────────────────────────────────────────────────
+  // ── Radiation ────────────────────────────────────────────────────────────
 
-  function eligibleSentences() {
-    return SENTENCES.filter(s => s.length <= cols);
+  function initRadiation() {
+    activeSents    = [];
+    sentSpawnTimer = (SENT_SPAWN_MIN + Math.random() * (SENT_SPAWN_MAX - SENT_SPAWN_MIN)) | 0;
   }
 
-  function randomSentencePlacement() {
-    const pool = eligibleSentences();
-    if (!pool.length) return null;
-    const text = pool[Math.random() * pool.length | 0];
-    const col  = Math.floor(Math.random() * Math.max(1, cols - text.length));
-    const row  = Math.floor(Math.random() * rows);
-    return { text, col, row };
-  }
-
-  function initSentences() {
-    activeSentences = [];
-    const count = Math.max(15, Math.floor(cols * rows / 160));
-    for (let i = 0; i < count; i++) {
-      const p = randomSentencePlacement();
-      if (!p) continue;
-      activeSentences.push({
-        ...p,
-        flash: 0,
-        t: (Math.random() * SENT_CYCLE_MAX) | 0,
-      });
-    }
+  function spawnSentence() {
+    const eligible = SENTENCES.filter(s => s.length <= cols);
+    if (!eligible.length) return;
+    const text     = eligible[Math.random() * eligible.length | 0];
+    const row      = Math.floor(Math.random() * rows);
+    const startCol = Math.floor(Math.random() * Math.max(1, cols - text.length));
+    activeSents.push({ row, startCol, text, alpha: SENT_ALPHA, hold: SENT_HOLD });
   }
 
   function updateRadiation() {
     updateStreaks();
 
-    const sentMax = Math.max(15, Math.floor(cols * rows / 160));
-
-    for (const s of activeSentences) {
-      // Cycle: relocate + pick new sentence after timer expires
-      if (--s.t <= 0) {
-        const p = randomSentencePlacement();
-        if (p) { s.text = p.text; s.col = p.col; s.row = p.row; }
-        s.t = (SENT_CYCLE_MIN + Math.random() * (SENT_CYCLE_MAX - SENT_CYCLE_MIN)) | 0;
-      }
-
-      // Random flash
-      if (s.flash > 0) {
-        s.flash -= FLASH_DECAY;
-        if (s.flash < 0) s.flash = 0;
-      } else if (Math.random() < FLASH_CHANCE * s.text.length) {
-        s.flash = FLASH_PEAK;
+    // Per-cell random char cycling + flashes
+    for (let i = 0; i < cells.length; i++) {
+      const c = cells[i];
+      if (--c.t <= 0) { c.ch = rchar(); c.t = (8 + Math.random() * 70) | 0; }
+      if (c.flash > 0) {
+        c.flash -= FLASH_DECAY;
+        if (c.flash < 0) c.flash = 0;
+      } else if (Math.random() < FLASH_CHANCE) {
+        c.flash = FLASH_PEAK;
       }
     }
 
-    // Top up if needed
-    if (activeSentences.length < sentMax && Math.random() < 0.05) {
-      const p = randomSentencePlacement();
-      if (p) activeSentences.push({ ...p, flash: 0, t: (SENT_CYCLE_MIN + Math.random() * (SENT_CYCLE_MAX - SENT_CYCLE_MIN)) | 0 });
+    // Sentence spawn timer
+    if (--sentSpawnTimer <= 0) {
+      spawnSentence();
+      sentSpawnTimer = (SENT_SPAWN_MIN + Math.random() * (SENT_SPAWN_MAX - SENT_SPAWN_MIN)) | 0;
+    }
+
+    // Sentence lifecycle: hold then fade
+    for (let i = activeSents.length - 1; i >= 0; i--) {
+      const s = activeSents[i];
+      if (s.hold > 0) { s.hold--; }
+      else { s.alpha -= SENT_FADE; if (s.alpha <= 0) activeSents.splice(i, 1); }
     }
   }
 
@@ -212,22 +201,35 @@
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
 
-    for (const s of activeSentences) {
+    // Build sparse overlay map for active sentences
+    const overlay = new Map();
+    for (const s of activeSents) {
       for (let ci = 0; ci < s.text.length; ci++) {
-        const col = s.col + ci;
+        const col = s.startCol + ci;
         if (col >= cols) break;
-        const cx = col * CELL + CELL * 0.5;
-        const cy = s.row * CELL + CELL * 0.5;
+        const idx = s.row * cols + col;
+        if (!overlay.has(idx) || overlay.get(idx).alpha < s.alpha)
+          overlay.set(idx, { ch: s.text[ci], alpha: s.alpha });
+      }
+    }
 
-        let a = BASE_A;
-        a += s.flash;
-        a += streakA[s.row * cols + col];
+    for (let row = 0; row < rows; row++) {
+      const cy = row * CELL + CELL * 0.5;
+      for (let col = 0; col < cols; col++) {
+        const idx = row * cols + col;
+        const cx  = col * CELL + CELL * 0.5;
+        const ov  = overlay.get(idx);
+        const c   = cells[idx];
+
+        const ch = ov ? ov.ch : c.ch;
+        let a    = ov ? ov.alpha + streakA[idx]
+                      : BASE_A + c.flash + streakA[idx];
 
         if (a < 0.008) continue;
         if (a > 0.88)  a = 0.88;
 
         ctx.fillStyle = `rgba(0,200,71,${a.toFixed(3)})`;
-        ctx.fillText(s.text[ci], cx, cy);
+        ctx.fillText(ch, cx, cy);
       }
     }
   }
@@ -307,7 +309,7 @@
     for (let i = 0; i < n; i++) {
       cells[i] = { ch: rchar(), t: (Math.random() * 70) | 0, flash: 0 };
     }
-    if (mode === 'radiation') { initStreakBuffer(); initSentences(); }
+    if (mode === 'radiation') { initStreakBuffer(); initRadiation(); }
     if (mode === 'gol')       initGol();
   }
 
@@ -377,7 +379,7 @@
     btn.addEventListener('click', () => {
       mode = mode === 'radiation' ? 'gol' : 'radiation';
       if (mode === 'gol')       { initGol(); golFrame = 0; }
-      if (mode === 'radiation') { initStreakBuffer(); initSentences(); }
+      if (mode === 'radiation') { initStreakBuffer(); initRadiation(); }
       buildLabel(btn, TOGGLE_LABELS[mode]);
     });
   }
