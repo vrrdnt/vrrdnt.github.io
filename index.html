@@ -55,13 +55,36 @@
 
     /* ── Header ── */
     .header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1.5rem;
       margin-bottom: 3.5rem;
     }
 
     .header-inner {
-      display: inline-block;
       background: rgba(7, 7, 6, 0.82);
       padding: 1.5rem 1.25rem;
+    }
+
+    #bg-toggle {
+      flex-shrink: 0;
+      background: rgba(7, 7, 6, 0.82);
+      border: 1px solid var(--border-mid);
+      color: var(--accent-dim);
+      font-family: inherit;
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      padding: 0.45rem 0.8rem;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+
+    #bg-toggle:hover {
+      color: var(--accent-hi);
+      border-color: var(--accent);
     }
 
     .header h1 {
@@ -204,6 +227,7 @@
         <h1>vrrdnt.dev<span class="cursor"></span></h1>
         <p class="tagline">tools and utilities, mostly for games</p>
       </div>
+      <button id="bg-toggle" aria-label="Switch background mode"></button>
     </header>
 
     <hr class="rule">
