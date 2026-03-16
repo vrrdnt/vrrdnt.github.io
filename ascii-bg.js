@@ -76,10 +76,16 @@
   const GOL_RESEED  = 0.04;  // reseed threshold (fraction of cells alive)
   const GOL_TICK    = 4;     // advance GoL state every N rendered frames
 
+  // Self (webcam) tunables
+  const LUMA_CHARS = ' .:;+=xX$&@'; // ASCII brightness ramp, dark → bright
+
+  // Mode cycle
+  const MODES = ['radiation', 'gol', 'self'];
+
   let canvas, ctx;
   let cols, rows, cells;
   let lastTs = 0;
-  let mode; // 'radiation' | 'gol'
+  let mode; // 'radiation' | 'gol' | 'self'
 
   // GoL double-buffer (Uint8Array for speed)
   let golCur, golNxt;
@@ -92,6 +98,12 @@
   // Radiation mode: active sentence overlays
   let activeSents    = [];  // { row, startCol, text, alpha, hold }
   let sentSpawnTimer = 0;
+
+  // Self (webcam) mode
+  let selfVideo     = null;
+  let selfStream    = null;
+  let selfOffscreen = null;
+  let selfCtx2      = null;
 
   // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -297,6 +309,78 @@
     }
   }
 
+  // ── Self (webcam ASCII) ────────────────────────────────────────────────────
+
+  async function initSelf() {
+    selfOffscreen        = document.createElement('canvas');
+    selfOffscreen.width  = cols;
+    selfOffscreen.height = rows;
+    selfCtx2             = selfOffscreen.getContext('2d', { willReadFrequently: true });
+
+    try {
+      selfStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      selfVideo  = document.createElement('video');
+      selfVideo.srcObject   = selfStream;
+      selfVideo.autoplay    = true;
+      selfVideo.muted       = true;
+      selfVideo.playsInline = true;
+      await selfVideo.play();
+    } catch (_) {
+      // Camera denied — fall back to radiation
+      stopSelf();
+      mode = 'radiation';
+      initStreakBuffer();
+      initRadiation();
+      const btn = document.getElementById('bg-toggle');
+      if (btn) buildLabel(btn, TOGGLE_LABELS[mode]);
+    }
+  }
+
+  function stopSelf() {
+    if (selfStream) {
+      selfStream.getTracks().forEach(t => t.stop());
+      selfStream = null;
+    }
+    selfVideo     = null;
+    selfOffscreen = null;
+    selfCtx2      = null;
+  }
+
+  function drawSelf() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (!selfVideo || selfVideo.readyState < 2) return;
+
+    // Sample video into offscreen canvas, mirrored horizontally
+    selfCtx2.save();
+    selfCtx2.translate(cols, 0);
+    selfCtx2.scale(-1, 1);
+    selfCtx2.drawImage(selfVideo, 0, 0, cols, rows);
+    selfCtx2.restore();
+
+    const pixels = selfCtx2.getImageData(0, 0, cols, rows).data;
+
+    ctx.font         = `${FONT_SZ}px "JetBrains Mono", monospace`;
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+
+    for (let row = 0; row < rows; row++) {
+      const cy = row * CELL + CELL * 0.5;
+      for (let col = 0; col < cols; col++) {
+        const px   = (row * cols + col) * 4;
+        const luma = (0.299 * pixels[px] + 0.587 * pixels[px + 1] + 0.114 * pixels[px + 2]) / 255;
+
+        if (luma < 0.03) continue;
+
+        const a  = Math.min(0.90, luma * 1.15);
+        const ci = Math.floor(luma * (LUMA_CHARS.length - 1));
+        const cx = col * CELL + CELL * 0.5;
+
+        ctx.fillStyle = `rgba(0,200,71,${a.toFixed(3)})`;
+        ctx.fillText(LUMA_CHARS[ci], cx, cy);
+      }
+    }
+  }
+
   // ── Lifecycle ───────────────────────────────────────────────────────────────
 
   function resize() {
@@ -310,13 +394,17 @@
       cells[i] = { ch: rchar(), t: (Math.random() * 70) | 0, flash: 0 };
     }
     if (mode === 'radiation') { initStreakBuffer(); initRadiation(); }
-    if (mode === 'gol')       initGol();
+    if (mode === 'gol')       { initGol(); }
+    if (mode === 'self' && selfOffscreen) {
+      selfOffscreen.width  = cols;
+      selfOffscreen.height = rows;
+    }
   }
 
   function update() {
     if (mode === 'radiation') {
       updateRadiation();
-    } else {
+    } else if (mode === 'gol') {
       // Flash on alive GoL cells
       for (let i = 0; i < cells.length; i++) {
         const c = cells[i];
@@ -329,11 +417,13 @@
       }
       if (++golFrame >= GOL_TICK) { golFrame = 0; stepGol(); }
     }
+    // self mode: no per-frame state update needed
   }
 
   function draw() {
-    if (mode === 'radiation') drawRadiation();
-    else                      drawGol();
+    if      (mode === 'radiation') drawRadiation();
+    else if (mode === 'gol')       drawGol();
+    else                           drawSelf();
   }
 
   function loop(ts) {
@@ -346,7 +436,7 @@
 
   // ── Toggle button ────────────────────────────────────────────────────────────
 
-  const TOGGLE_LABELS = { radiation: '[ death ]', gol: '[ life ]' };
+  const TOGGLE_LABELS = { radiation: '[ death ]', gol: '[ life ]', self: '[ self ]' };
   // ASCII-only pool for button glitch — avoids double-width CJK glyphs shifting layout
   const BTN_CHARS = '0123456789ABCDEFabcdef+x=[]{}|/<>?!#$%';
   function rbchar() { return BTN_CHARS[Math.random() * BTN_CHARS.length | 0]; }
@@ -376,10 +466,16 @@
       }
     }, 80);
 
-    btn.addEventListener('click', () => {
-      mode = mode === 'radiation' ? 'gol' : 'radiation';
+    btn.addEventListener('click', async () => {
+      const prev = mode;
+      mode = MODES[(MODES.indexOf(mode) + 1) % MODES.length];
+
+      if (prev === 'self') stopSelf();
+
       if (mode === 'gol')       { initGol(); golFrame = 0; }
       if (mode === 'radiation') { initStreakBuffer(); initRadiation(); }
+      if (mode === 'self')      { await initSelf(); }
+
       buildLabel(btn, TOGGLE_LABELS[mode]);
     });
   }

@@ -211,6 +211,29 @@
       letter-spacing: 0.04em;
     }
 
+    #content-toggle {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 100;
+      background: rgba(7, 7, 6, 0.82);
+      border: 1px solid var(--border-mid);
+      color: var(--accent-dim);
+      font-family: inherit;
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      padding: 0.45rem 0.8rem;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+
+    #content-toggle:hover {
+      color: var(--accent-hi);
+      border-color: var(--accent);
+    }
+
     @media (max-width: 640px) {
       .page { padding: 2.5rem 1.25rem 3.5rem; }
       .header h1 { font-size: 1.8rem; }
@@ -220,6 +243,7 @@
 </head>
 <body>
   <canvas id="ascii-bg" aria-hidden="true"></canvas>
+  <button id="content-toggle" aria-label="Toggle page content">[ hide ]</button>
   <div class="page">
 
     <header class="header">
@@ -298,6 +322,16 @@
     </footer>
 
   </div>
+
+  <script>
+    const ct   = document.getElementById('content-toggle');
+    const page = document.querySelector('.page');
+    ct.addEventListener('click', () => {
+      const hiding = page.style.display !== 'none';
+      page.style.display = hiding ? 'none' : '';
+      ct.textContent = hiding ? '[ show ]' : '[ hide ]';
+    });
+  </script>
 
   <script>
     const VS_TOOLS = [
