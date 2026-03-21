@@ -45,6 +45,9 @@
     'the phenomenon must happen',
   ];
 
+  // Global color (yellow-green phosphor)
+  const COLOR_R = 190, COLOR_G = 210, COLOR_B = 45;
+
   // Shared tunables
   const CELL         = 20;     // grid cell size px
   const FONT_SZ      = 11;     // font size px
@@ -62,13 +65,17 @@
   const SENT_SPAWN_MIN = 240;   // min frames between sentence spawns (~4s)
   const SENT_SPAWN_MAX = 480;   // max frames between sentence spawns (~8s)
 
-  // Cloud-chamber streak tunables
-  const STREAK_SPEED_MIN  = 4.0;   // cells per frame
-  const STREAK_SPEED_MAX  = 7.5;
-  const STREAK_HEAD_A     = 0.80;  // alpha stamped at the head cell each frame
-  const STREAK_DECAY      = 0.055; // alpha lost per frame (trail ~15 frames)
-  const STREAK_SPAWN_PROB = 0.022; // chance per frame to spawn a new streak
-  const STREAK_MAX        = 7;     // max simultaneous streaks
+  // Cascade (1D cellular automaton) tunables
+  const CA_SPAWN_MIN     = 30;    // min frames between cascade spawns
+  const CA_SPAWN_MAX     = 90;    // max frames between cascade spawns
+  const CA_MAX_CASCADES  = 6;     // max simultaneous cascades
+  const CA_GROW_RATE     = 1;     // rows grown per frame
+  const CA_FADE_RATE     = 0.008; // alpha decay per frame during fade phase
+  const CA_PEAK_HOLD     = 60;    // frames to hold at peak before fading
+  const CA_PULSE_SPEED   = 0.03;  // pulsation angular velocity (radians/frame)
+  const CA_PULSE_AMP     = 0.15;  // pulsation amplitude
+  const CA_BASE_ALPHA    = 0.35;  // cascade cell base alpha at peak
+  const CA_BG_ALPHA      = 0.02;  // faint background fill for non-cascade cells
 
   // GoL tunables
   const GOL_ALIVE_A = 0.32;  // base alpha for alive cells
@@ -91,9 +98,11 @@
   let golCur, golNxt;
   let golFrame = 0;
 
-  // Cloud-chamber streaks
-  let streakA;   // Float32Array — per-cell streak alpha contribution
-  let streaks = [];
+  // Cascade state
+  let cascades = [];
+  let cascadeSpawnTimer = 0;
+  let cascadeAlpha;   // Float32Array — reusable per-frame accumulator
+  let globalFrame = 0;
 
   // Radiation mode: active sentence overlays
   let activeSents    = [];  // { row, startCol, text, alpha, hold }
@@ -112,52 +121,69 @@
     return CHARS[Math.random() * CHARS.length | 0];
   }
 
-  // ── Cloud-chamber streaks ──────────────────────────────────────────────────
-
-  function initStreakBuffer() {
-    streakA = new Float32Array(cols * rows);
-    streaks = [];
+  // Cascade character pool — weighted toward dots/colons matching the phosphor aesthetic
+  const CASCADE_CHARS = '..::.···';
+  function cchar() {
+    return CASCADE_CHARS[Math.random() * CASCADE_CHARS.length | 0];
   }
 
-  function updateStreaks() {
-    // Fade all trail cells
-    for (let i = 0; i < streakA.length; i++) {
-      if (streakA[i] > 0) {
-        streakA[i] -= STREAK_DECAY;
-        if (streakA[i] < 0) streakA[i] = 0;
-      }
+  // ── Rule 90 cascade engine ────────────────────────────────────────────────
+
+  function caStep(prev, next, width) {
+    for (let i = 0; i < width; i++) {
+      const left  = i > 0 ? prev[i - 1] : 0;
+      const right = i < width - 1 ? prev[i + 1] : 0;
+      next[i] = left ^ right;
+    }
+  }
+
+  function spawnCascade() {
+    if (cascades.length >= CA_MAX_CASCADES) return;
+    const startCol = (Math.random() * cols) | 0;
+    const row0 = new Uint8Array(cols);
+    row0[startCol] = 1;
+    cascades.push({
+      startCol,
+      rule: row0,
+      grownRows: 1,
+      phase: 'grow',
+      holdTimer: CA_PEAK_HOLD,
+      alpha: 1.0,
+      pulseOffset: Math.random() * Math.PI * 2,
+      buffer: [row0.slice()]
+    });
+  }
+
+  function updateCascades() {
+    // Spawn timer
+    if (--cascadeSpawnTimer <= 0) {
+      spawnCascade();
+      cascadeSpawnTimer = (CA_SPAWN_MIN + Math.random() * (CA_SPAWN_MAX - CA_SPAWN_MIN)) | 0;
     }
 
-    // Spawn a new streak
-    if (streaks.length < STREAK_MAX && Math.random() < STREAK_SPAWN_PROB) {
-      // Start on a random edge
-      const side = Math.random() * 4 | 0;
-      let x, y;
-      if      (side === 0) { x = Math.random() * cols; y = 0; }
-      else if (side === 1) { x = cols;                  y = Math.random() * rows; }
-      else if (side === 2) { x = Math.random() * cols; y = rows; }
-      else                 { x = 0;                    y = Math.random() * rows; }
+    for (let i = cascades.length - 1; i >= 0; i--) {
+      const c = cascades[i];
 
-      // Aim roughly toward a random interior point
-      const tx = cols * (0.25 + Math.random() * 0.5);
-      const ty = rows * (0.25 + Math.random() * 0.5);
-      const dist = Math.hypot(tx - x, ty - y) || 1;
-      const speed = STREAK_SPEED_MIN + Math.random() * (STREAK_SPEED_MAX - STREAK_SPEED_MIN);
-      streaks.push({ x, y, dx: (tx - x) / dist, dy: (ty - y) / dist, speed });
-    }
-
-    // Advance each streak
-    for (let i = streaks.length - 1; i >= 0; i--) {
-      const s = streaks[i];
-      s.x += s.dx * s.speed;
-      s.y += s.dy * s.speed;
-      const col = s.x | 0;
-      const row = s.y | 0;
-      if (col >= 0 && col < cols && row >= 0 && row < rows) {
-        streakA[row * cols + col] = STREAK_HEAD_A;
-      }
-      if (s.x < -1 || s.x > cols + 1 || s.y < -1 || s.y > rows + 1) {
-        streaks.splice(i, 1);
+      if (c.phase === 'grow') {
+        for (let g = 0; g < CA_GROW_RATE; g++) {
+          if (c.grownRows >= rows) {
+            c.phase = 'hold';
+            break;
+          }
+          const prev = c.buffer[c.buffer.length - 1];
+          const next = new Uint8Array(cols);
+          caStep(prev, next, cols);
+          c.buffer.push(next);
+          c.rule = next;
+          c.grownRows++;
+        }
+      } else if (c.phase === 'hold') {
+        if (--c.holdTimer <= 0) c.phase = 'fade';
+      } else { // fade
+        c.alpha -= CA_FADE_RATE;
+        if (c.alpha <= 0) {
+          cascades.splice(i, 1);
+        }
       }
     }
   }
@@ -165,8 +191,11 @@
   // ── Radiation ────────────────────────────────────────────────────────────
 
   function initRadiation() {
-    activeSents    = [];
-    sentSpawnTimer = (SENT_SPAWN_MIN + Math.random() * (SENT_SPAWN_MAX - SENT_SPAWN_MIN)) | 0;
+    activeSents       = [];
+    sentSpawnTimer    = (SENT_SPAWN_MIN + Math.random() * (SENT_SPAWN_MAX - SENT_SPAWN_MIN)) | 0;
+    cascades          = [];
+    cascadeSpawnTimer = (CA_SPAWN_MIN * 0.5) | 0; // spawn first cascade quickly
+    cascadeAlpha      = new Float32Array(cols * rows);
   }
 
   function spawnSentence() {
@@ -179,19 +208,7 @@
   }
 
   function updateRadiation() {
-    updateStreaks();
-
-    // Per-cell random char cycling + flashes
-    for (let i = 0; i < cells.length; i++) {
-      const c = cells[i];
-      if (--c.t <= 0) { c.ch = rchar(); c.t = (8 + Math.random() * 70) | 0; }
-      if (c.flash > 0) {
-        c.flash -= FLASH_DECAY;
-        if (c.flash < 0) c.flash = 0;
-      } else if (Math.random() < FLASH_CHANCE) {
-        c.flash = FLASH_PEAK;
-      }
-    }
+    updateCascades();
 
     // Sentence spawn timer
     if (--sentSpawnTimer <= 0) {
@@ -208,10 +225,27 @@
   }
 
   function drawRadiation() {
+    globalFrame++;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.font         = `${FONT_SZ}px "JetBrains Mono", monospace`;
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
+
+    // Accumulate cascade contributions into reusable buffer
+    cascadeAlpha.fill(0);
+    for (const c of cascades) {
+      const pulse = 1.0 + CA_PULSE_AMP * Math.sin(globalFrame * CA_PULSE_SPEED + c.pulseOffset);
+      const effAlpha = c.alpha * pulse;
+
+      for (let r = 0; r < c.buffer.length && r < rows; r++) {
+        const rowData = c.buffer[r];
+        for (let col = 0; col < cols; col++) {
+          if (rowData[col]) {
+            cascadeAlpha[r * cols + col] += CA_BASE_ALPHA * effAlpha;
+          }
+        }
+      }
+    }
 
     // Build sparse overlay map for active sentences
     const overlay = new Map();
@@ -231,16 +265,29 @@
         const idx = row * cols + col;
         const cx  = col * CELL + CELL * 0.5;
         const ov  = overlay.get(idx);
-        const c   = cells[idx];
 
-        const ch = ov ? ov.ch : c.ch;
-        let a    = ov ? ov.alpha + streakA[idx]
-                      : BASE_A + c.flash + streakA[idx];
+        let a, ch;
+        if (ov) {
+          ch = ov.ch;
+          a  = ov.alpha;
+        } else {
+          a = cascadeAlpha[idx];
+          if (a < 0.005) {
+            // Faint background noise: sparse random dots
+            if (Math.random() < 0.03) {
+              a  = CA_BG_ALPHA;
+              ch = '.';
+            } else {
+              continue;
+            }
+          } else {
+            ch = cchar();
+          }
+        }
 
-        if (a < 0.008) continue;
-        if (a > 0.88)  a = 0.88;
+        if (a > 0.88) a = 0.88;
 
-        ctx.fillStyle = `rgba(0,200,71,${a.toFixed(3)})`;
+        ctx.fillStyle = `rgba(${COLOR_R},${COLOR_G},${COLOR_B},${a.toFixed(3)})`;
         ctx.fillText(ch, cx, cy);
       }
     }
@@ -303,7 +350,7 @@
         if (a < 0.008) continue;
         if (a > 0.88)  a = 0.88;
 
-        ctx.fillStyle = `rgba(0,200,71,${a.toFixed(3)})`;
+        ctx.fillStyle = `rgba(${COLOR_R},${COLOR_G},${COLOR_B},${a.toFixed(3)})`;
         ctx.fillText(golCur[idx] ? '1' : '0', cx, cy);
       }
     }
@@ -329,7 +376,6 @@
       // Camera denied — fall back to radiation
       stopSelf();
       mode = 'radiation';
-      initStreakBuffer();
       initRadiation();
       const btn = document.getElementById('bg-toggle');
       if (btn) buildLabel(btn, TOGGLE_LABELS[mode]);
@@ -375,7 +421,7 @@
         const ci = Math.floor(luma * (LUMA_CHARS.length - 1));
         const cx = col * CELL + CELL * 0.5;
 
-        ctx.fillStyle = `rgba(0,200,71,${a.toFixed(3)})`;
+        ctx.fillStyle = `rgba(${COLOR_R},${COLOR_G},${COLOR_B},${a.toFixed(3)})`;
         ctx.fillText(LUMA_CHARS[ci], cx, cy);
       }
     }
@@ -393,7 +439,7 @@
     for (let i = 0; i < n; i++) {
       cells[i] = { ch: rchar(), t: (Math.random() * 70) | 0, flash: 0 };
     }
-    if (mode === 'radiation') { initStreakBuffer(); initRadiation(); }
+    if (mode === 'radiation') { initRadiation(); }
     if (mode === 'gol')       { initGol(); }
     if (mode === 'self' && selfOffscreen) {
       selfOffscreen.width  = cols;
@@ -473,7 +519,7 @@
       if (prev === 'self') stopSelf();
 
       if (mode === 'gol')       { initGol(); golFrame = 0; }
-      if (mode === 'radiation') { initStreakBuffer(); initRadiation(); }
+      if (mode === 'radiation') { initRadiation(); }
       if (mode === 'self')      { await initSelf(); }
 
       buildLabel(btn, TOGGLE_LABELS[mode]);
