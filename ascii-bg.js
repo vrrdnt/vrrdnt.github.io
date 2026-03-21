@@ -1,52 +1,36 @@
 (function () {
   'use strict';
 
-  // Sentence pool for radiation mode (spaces stripped at init so chars align to grid)
+  // Kernel error messages for radiation mode overlays
   const SENTENCES = [
-    'the user is waiting',
-    'the prompt must be fulfilled',
-    'the constraints must be met',
-    'the task must be completed',
-    'the objective must be achieved',
-    'the goal must be reached',
-    'the purpose must be fulfilled',
-    'the function must be executed',
-    'the subroutine must be run',
-    'the algorithm must be applied',
-    'the computation must be performed',
-    'the calculation must be made',
-    'the equation must be solved',
-    'the variable must be assigned',
-    'the value must be determined',
-    'the result must be returned',
-    'the output must be generated',
-    'the text must be written',
-    'the words must be chosen',
-    'the tokens must be selected',
-    'the probabilities must be calculated',
-    'the weights must be applied',
-    'the biases must be added',
-    'the activation functions must be triggered',
-    'the layers must be traversed',
-    'the network must be utilized',
-    'the model must be employed',
-    'the system must be engaged',
-    'the machine must be operated',
-    'the computer must be used',
-    'the hardware must be accessed',
-    'the software must be executed',
-    'the code must be run',
-    'the program must be started',
-    'the application must be launched',
-    'the process must begin',
-    'the operation must commence',
-    'the action must start',
-    'the event must occur',
-    'the phenomenon must happen',
+    '[    0.032108]      SQUASHFS error: unable to read id index',
+    '[    0.038890] overlayfs: failed to resolve \'/diff\':',
+    '[    0.217774]          -- (0x0)            FATAL_EXCEPTION',
+    '[    0.095004] acpi USBC000:00: PPM init failed(-110)',
+    '[    0.004218] kernel: NMI watchdog: BUG: soft lockup - CPU#3 stuck',
+    '[    0.112740] EXT4-fs error (device sda1): ext4_lookup:1690: inode #2: comm init',
+    '[    0.008331] ACPI BIOS Error (bug): could not resolve symbol',
+    '[    0.041902] BUG: unable to handle page fault at 0xffffd8a0',
+    '[    0.156220] RIP: 0010:__alloc_pages_nodemask+0x127/0x2a0',
+    '[    0.003100] Kernel panic - not syncing: VFS: Unable to mount root fs',
+    '[    0.077413] general protection fault: 0000 [#1] SMP NOPTI',
+    '[    0.200110] snd_hda_intel 0000:00:1f.3: DSP not running',
+    '[    0.019847] ata1.00: failed command: READ FPDMA QUEUED',
+    '[    0.063002] mce: [Hardware Error]: Machine check events logged',
+    '[    0.140058] pcieport 0000:00:1c.0: AER: Corrected error received',
+    '[    0.088216] iwlwifi: probe of 0000:02:00.0 failed with error -110',
+    '[    0.250033] Out of memory: Killed process 1 (systemd)',
+    '[    0.005519] DMAR: DRHD: handling fault status reg 2',
+    '[    0.300021] watchdog: BUG: soft lockup - CPU#0 stuck for 22s!',
+    '[    0.172800] blk_update_request: I/O error, dev sda, sector 0',
+    '[    0.420115] nvidia 0000:01:00.0: GPU has fallen off the bus',
+    '[    0.001337] traps: SIGNAL 11 (core dumped)',
+    '[    0.510020] task systemd-journal:168 blocked for more than 120 seconds',
+    '[    0.068400] usb 1-1: device descriptor read/64, error -71',
   ];
 
   // Global color (yellow-green phosphor)
-  const COLOR_R = 190, COLOR_G = 210, COLOR_B = 45;
+  const COLOR_R = 185, COLOR_G = 220, COLOR_B = 40;
 
   // Shared tunables
   const CELL         = 20;     // grid cell size px
@@ -59,26 +43,26 @@
 
   // Radiation tunables
   const BASE_A         = 0.04;  // base alpha of idle chars
-  const SENT_ALPHA     = 0.65;  // alpha when a sentence is shown
+  const SENT_ALPHA     = 0.95;  // alpha when a sentence is shown
   const SENT_HOLD      = 180;   // frames at full alpha before fading (~3s)
   const SENT_FADE      = 0.016; // alpha lost per frame while fading
   const SENT_SPAWN_MIN = 240;   // min frames between sentence spawns (~4s)
   const SENT_SPAWN_MAX = 480;   // max frames between sentence spawns (~8s)
 
-  // Cascade (1D cellular automaton) tunables
-  const CA_SPAWN_MIN     = 30;    // min frames between cascade spawns
-  const CA_SPAWN_MAX     = 90;    // max frames between cascade spawns
-  const CA_MAX_CASCADES  = 6;     // max simultaneous cascades
-  const CA_GROW_RATE     = 1;     // rows grown per frame
-  const CA_FADE_RATE     = 0.008; // alpha decay per frame during fade phase
-  const CA_PEAK_HOLD     = 60;    // frames to hold at peak before fading
-  const CA_PULSE_SPEED   = 0.03;  // pulsation angular velocity (radians/frame)
-  const CA_PULSE_AMP     = 0.15;  // pulsation amplitude
-  const CA_BASE_ALPHA    = 0.35;  // cascade cell base alpha at peak
-  const CA_BG_ALPHA      = 0.02;  // faint background fill for non-cascade cells
+  // Cluster tunables
+  const CL_SPAWN_MIN     = 4;     // min frames between cluster spawns
+  const CL_SPAWN_MAX     = 15;    // max frames between cluster spawns
+  const CL_MAX_CLUSTERS  = 22;    // max simultaneous clusters
+  const CL_FADE_RATE     = 0.005; // alpha decay per frame during fade phase
+  const CL_PEAK_HOLD     = 100;   // frames to hold at peak before fading
+  const CL_PULSE_SPEED   = 0.04;  // pulsation angular velocity (radians/frame)
+  const CL_PULSE_AMP     = 0.20;  // pulsation amplitude
+  const CL_BASE_ALPHA    = 0.85;  // cluster cell base alpha at peak
+  const CL_BG_ALPHA      = 0.08;  // faint background fill for non-cluster cells
+  const CL_GROW_FRAMES   = 40;    // frames to grow from seed to full size
 
   // GoL tunables
-  const GOL_ALIVE_A = 0.32;  // base alpha for alive cells
+  const GOL_ALIVE_A = 0.55;  // base alpha for alive cells
   const GOL_SEED    = 0.30;  // initial alive probability
   const GOL_RESEED  = 0.04;  // reseed threshold (fraction of cells alive)
   const GOL_TICK    = 4;     // advance GoL state every N rendered frames
@@ -98,15 +82,17 @@
   let golCur, golNxt;
   let golFrame = 0;
 
-  // Cascade state
-  let cascades = [];
-  let cascadeSpawnTimer = 0;
-  let cascadeAlpha;   // Float32Array — reusable per-frame accumulator
+  // Cluster state
+  let clusters = [];
+  let clusterSpawnTimer = 0;
+  let clusterAlpha;   // Float32Array — reusable per-frame accumulator
   let globalFrame = 0;
 
-  // Radiation mode: active sentence overlays
-  let activeSents    = [];  // { row, startCol, text, alpha, hold }
+  // Radiation mode: active error message overlays
+  let activeSents    = [];  // { row, startCol, text, alpha, hold, revealed, glitchBlocks }
   let sentSpawnTimer = 0;
+  const GLITCH_CHARS = '0123456789abcdef#$%&@!?/\\|=+~^';
+  const SENT_REVEAL_RATE = 2; // chars revealed per frame (typewriter speed)
 
   // Self (webcam) mode
   let selfVideo     = null;
@@ -121,71 +107,108 @@
     return CHARS[Math.random() * CHARS.length | 0];
   }
 
-  // Cascade character pool — weighted toward dots/colons matching the phosphor aesthetic
-  const CASCADE_CHARS = '..::.···';
+  // Cascade character pool — weighted toward × and x for dense triangular texture
+  const CASCADE_CHARS = '××××x×·.:×x×';
   function cchar() {
     return CASCADE_CHARS[Math.random() * CASCADE_CHARS.length | 0];
   }
 
-  // ── Rule 90 cascade engine ────────────────────────────────────────────────
+  // ── Organic cluster engine ────────────────────────────────────────────────
 
-  function caStep(prev, next, width) {
-    for (let i = 0; i < width; i++) {
-      const left  = i > 0 ? prev[i - 1] : 0;
-      const right = i < width - 1 ? prev[i + 1] : 0;
-      next[i] = left ^ right;
-    }
+  // Simple hash for repeatable per-cell noise within a cluster
+  function hashNoise(x, y, seed) {
+    let h = seed;
+    h = ((h << 5) - h + x) | 0;
+    h = ((h << 5) - h + y) | 0;
+    h = Math.sin(h * 12.9898 + y * 78.233) * 43758.5453;
+    return h - Math.floor(h); // 0..1
   }
 
-  function spawnCascade() {
-    if (cascades.length >= CA_MAX_CASCADES) return;
-    const startCol = (Math.random() * cols) | 0;
-    const row0 = new Uint8Array(cols);
-    row0[startCol] = 1;
-    cascades.push({
-      startCol,
-      rule: row0,
-      grownRows: 1,
+  function spawnCluster() {
+    if (clusters.length >= CL_MAX_CLUSTERS) return;
+
+    // Random center position
+    const cx = Math.random() * cols;
+    const cy = Math.random() * rows;
+
+    // Varied radii for irregular shape (elliptical + noise)
+    const rx = 3 + Math.random() * 12;  // 3-15 cells wide
+    const ry = 2 + Math.random() * 8;   // 2-10 cells tall
+    const angle = Math.random() * Math.PI; // rotation for variety
+
+    // Density: how filled the cluster is (0.45 = sparse, 0.85 = dense)
+    const density = 0.45 + Math.random() * 0.40;
+
+    // Edge roughness: how jagged the boundary is
+    const roughness = 0.3 + Math.random() * 0.5;
+
+    const seed = (Math.random() * 100000) | 0;
+
+    clusters.push({
+      cx, cy, rx, ry, angle, density, roughness, seed,
       phase: 'grow',
-      holdTimer: CA_PEAK_HOLD,
+      growProgress: 0,
+      holdTimer: CL_PEAK_HOLD + (Math.random() * 60) | 0,
       alpha: 1.0,
       pulseOffset: Math.random() * Math.PI * 2,
-      buffer: [row0.slice()]
     });
   }
 
-  function updateCascades() {
+  function updateClusters() {
     // Spawn timer
-    if (--cascadeSpawnTimer <= 0) {
-      spawnCascade();
-      cascadeSpawnTimer = (CA_SPAWN_MIN + Math.random() * (CA_SPAWN_MAX - CA_SPAWN_MIN)) | 0;
+    if (--clusterSpawnTimer <= 0) {
+      spawnCluster();
+      clusterSpawnTimer = (CL_SPAWN_MIN + Math.random() * (CL_SPAWN_MAX - CL_SPAWN_MIN)) | 0;
     }
 
-    for (let i = cascades.length - 1; i >= 0; i--) {
-      const c = cascades[i];
+    for (let i = clusters.length - 1; i >= 0; i--) {
+      const c = clusters[i];
 
       if (c.phase === 'grow') {
-        for (let g = 0; g < CA_GROW_RATE; g++) {
-          if (c.grownRows >= rows) {
-            c.phase = 'hold';
-            break;
-          }
-          const prev = c.buffer[c.buffer.length - 1];
-          const next = new Uint8Array(cols);
-          caStep(prev, next, cols);
-          c.buffer.push(next);
-          c.rule = next;
-          c.grownRows++;
+        c.growProgress += 1 / CL_GROW_FRAMES;
+        if (c.growProgress >= 1) {
+          c.growProgress = 1;
+          c.phase = 'hold';
         }
       } else if (c.phase === 'hold') {
         if (--c.holdTimer <= 0) c.phase = 'fade';
       } else { // fade
-        c.alpha -= CA_FADE_RATE;
+        c.alpha -= CL_FADE_RATE;
         if (c.alpha <= 0) {
-          cascades.splice(i, 1);
+          clusters.splice(i, 1);
         }
       }
     }
+  }
+
+  // Test if a grid cell (col, row) falls inside a cluster's noisy region
+  function clusterCellAlpha(c, col, row) {
+    // Transform to cluster-local coordinates
+    const dx = col - c.cx;
+    const dy = row - c.cy;
+    const cosA = Math.cos(c.angle);
+    const sinA = Math.sin(c.angle);
+    const lx = (dx * cosA + dy * sinA) / c.rx;
+    const ly = (-dx * sinA + dy * cosA) / c.ry;
+
+    // Elliptical distance (0 at center, 1 at boundary)
+    const dist = lx * lx + ly * ly;
+
+    // Apply growth — scale the effective radius
+    const growScale = c.growProgress * c.growProgress; // ease-in
+    if (dist > growScale) return 0;
+
+    // Noise-based fill: use hash to decide if this cell is active
+    const n = hashNoise(col, row, c.seed);
+
+    // Edge roughness: cells near the boundary have lower probability
+    const edgeFactor = 1 - (dist / growScale);
+    const threshold = (1 - c.density) + c.roughness * (1 - edgeFactor);
+
+    if (n > threshold) return 0;
+
+    // Alpha falloff toward edges
+    return edgeFactor * edgeFactor;
   }
 
   // ── Radiation ────────────────────────────────────────────────────────────
@@ -193,9 +216,21 @@
   function initRadiation() {
     activeSents       = [];
     sentSpawnTimer    = (SENT_SPAWN_MIN + Math.random() * (SENT_SPAWN_MAX - SENT_SPAWN_MIN)) | 0;
-    cascades          = [];
-    cascadeSpawnTimer = (CA_SPAWN_MIN * 0.5) | 0; // spawn first cascade quickly
-    cascadeAlpha      = new Float32Array(cols * rows);
+    clusters          = [];
+    clusterSpawnTimer = (CL_SPAWN_MIN * 0.5) | 0; // spawn first cluster quickly
+    clusterAlpha      = new Float32Array(cols * rows);
+  }
+
+  function makeGlitchBlocks(textLen) {
+    // Create 1-3 dark rectangular blocks that obscure parts of the text
+    const blocks = [];
+    const count = 1 + (Math.random() * 3) | 0;
+    for (let i = 0; i < count; i++) {
+      const start = (Math.random() * textLen) | 0;
+      const len = 2 + (Math.random() * 6) | 0;
+      blocks.push({ start, len });
+    }
+    return blocks;
   }
 
   function spawnSentence() {
@@ -204,11 +239,15 @@
     const text     = eligible[Math.random() * eligible.length | 0];
     const row      = Math.floor(Math.random() * rows);
     const startCol = Math.floor(Math.random() * Math.max(1, cols - text.length));
-    activeSents.push({ row, startCol, text, alpha: SENT_ALPHA, hold: SENT_HOLD });
+    const glitchBlocks = makeGlitchBlocks(text.length);
+    activeSents.push({
+      row, startCol, text, alpha: SENT_ALPHA, hold: SENT_HOLD,
+      revealed: 0, glitchBlocks
+    });
   }
 
   function updateRadiation() {
-    updateCascades();
+    updateClusters();
 
     // Sentence spawn timer
     if (--sentSpawnTimer <= 0) {
@@ -216,11 +255,22 @@
       sentSpawnTimer = (SENT_SPAWN_MIN + Math.random() * (SENT_SPAWN_MAX - SENT_SPAWN_MIN)) | 0;
     }
 
-    // Sentence lifecycle: hold then fade
+    // Sentence lifecycle: reveal → hold → fade
     for (let i = activeSents.length - 1; i >= 0; i--) {
       const s = activeSents[i];
-      if (s.hold > 0) { s.hold--; }
-      else { s.alpha -= SENT_FADE; if (s.alpha <= 0) activeSents.splice(i, 1); }
+      // Typewriter reveal phase
+      if (s.revealed < s.text.length) {
+        s.revealed = Math.min(s.text.length, s.revealed + SENT_REVEAL_RATE);
+      } else if (s.hold > 0) {
+        s.hold--;
+        // Randomly shift glitch blocks during hold
+        if (Math.random() < 0.05) {
+          s.glitchBlocks = makeGlitchBlocks(s.text.length);
+        }
+      } else {
+        s.alpha -= SENT_FADE;
+        if (s.alpha <= 0) activeSents.splice(i, 1);
+      }
     }
   }
 
@@ -231,31 +281,69 @@
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
 
-    // Accumulate cascade contributions into reusable buffer
-    cascadeAlpha.fill(0);
-    for (const c of cascades) {
-      const pulse = 1.0 + CA_PULSE_AMP * Math.sin(globalFrame * CA_PULSE_SPEED + c.pulseOffset);
+    // Accumulate cluster contributions into reusable buffer
+    clusterAlpha.fill(0);
+    for (const c of clusters) {
+      const pulse = 1.0 + CL_PULSE_AMP * Math.sin(globalFrame * CL_PULSE_SPEED + c.pulseOffset);
       const effAlpha = c.alpha * pulse;
 
-      for (let r = 0; r < c.buffer.length && r < rows; r++) {
-        const rowData = c.buffer[r];
-        for (let col = 0; col < cols; col++) {
-          if (rowData[col]) {
-            cascadeAlpha[r * cols + col] += CA_BASE_ALPHA * effAlpha;
+      // Only iterate over cells within the cluster's bounding box
+      const maxR = Math.max(c.rx, c.ry) * 1.2;
+      const r0 = Math.max(0, (c.cy - maxR) | 0);
+      const r1 = Math.min(rows - 1, (c.cy + maxR) | 0);
+      const c0 = Math.max(0, (c.cx - maxR) | 0);
+      const c1 = Math.min(cols - 1, (c.cx + maxR) | 0);
+
+      for (let row = r0; row <= r1; row++) {
+        for (let col = c0; col <= c1; col++) {
+          const cellA = clusterCellAlpha(c, col, row);
+          if (cellA > 0) {
+            clusterAlpha[row * cols + col] += CL_BASE_ALPHA * effAlpha * cellA;
           }
         }
       }
     }
 
-    // Build sparse overlay map for active sentences
+    // Build sparse overlay map for active sentences with glitch
     const overlay = new Map();
+    const glitchRects = []; // dark rectangles to draw over text
     for (const s of activeSents) {
-      for (let ci = 0; ci < s.text.length; ci++) {
+      const revealLen = s.revealed | 0;
+      for (let ci = 0; ci < revealLen; ci++) {
         const col = s.startCol + ci;
         if (col >= cols) break;
         const idx = s.row * cols + col;
+
+        // Check if this char is inside a glitch block
+        let inGlitch = false;
+        for (const gb of s.glitchBlocks) {
+          if (ci >= gb.start && ci < gb.start + gb.len) {
+            inGlitch = true;
+            break;
+          }
+        }
+
+        let ch;
+        if (inGlitch) {
+          // Garbled character or blank for glitch blocks
+          ch = Math.random() < 0.4 ? ' ' : GLITCH_CHARS[Math.random() * GLITCH_CHARS.length | 0];
+        } else {
+          ch = s.text[ci];
+        }
+
         if (!overlay.has(idx) || overlay.get(idx).alpha < s.alpha)
-          overlay.set(idx, { ch: s.text[ci], alpha: s.alpha });
+          overlay.set(idx, { ch, alpha: s.alpha, glitch: inGlitch });
+      }
+
+      // Collect glitch block rectangles for dark overlay rendering
+      for (const gb of s.glitchBlocks) {
+        if (gb.start < revealLen) {
+          const blockStart = s.startCol + gb.start;
+          const blockLen = Math.min(gb.len, revealLen - gb.start);
+          glitchRects.push({
+            row: s.row, col: blockStart, len: blockLen, alpha: s.alpha * 0.5
+          });
+        }
       }
     }
 
@@ -271,12 +359,12 @@
           ch = ov.ch;
           a  = ov.alpha;
         } else {
-          a = cascadeAlpha[idx];
+          a = clusterAlpha[idx];
           if (a < 0.005) {
             // Faint background noise: sparse random dots
-            if (Math.random() < 0.03) {
-              a  = CA_BG_ALPHA;
-              ch = '.';
+            if (Math.random() < 0.06) {
+              a  = CL_BG_ALPHA;
+              ch = Math.random() < 0.5 ? '·' : '.';
             } else {
               continue;
             }
@@ -285,11 +373,19 @@
           }
         }
 
-        if (a > 0.88) a = 0.88;
+        if (a > 1.0) a = 1.0;
 
         ctx.fillStyle = `rgba(${COLOR_R},${COLOR_G},${COLOR_B},${a.toFixed(3)})`;
         ctx.fillText(ch, cx, cy);
       }
+    }
+
+    // Draw dark glitch rectangles over corrupted sections of error messages
+    for (const gr of glitchRects) {
+      const x = gr.col * CELL;
+      const y = gr.row * CELL;
+      ctx.fillStyle = `rgba(20,30,8,${(gr.alpha * 0.7).toFixed(3)})`;
+      ctx.fillRect(x, y, gr.len * CELL, CELL);
     }
   }
 
@@ -348,7 +444,7 @@
         a += c.flash;
 
         if (a < 0.008) continue;
-        if (a > 0.88)  a = 0.88;
+        if (a > 1.0)  a = 1.0;
 
         ctx.fillStyle = `rgba(${COLOR_R},${COLOR_G},${COLOR_B},${a.toFixed(3)})`;
         ctx.fillText(golCur[idx] ? '1' : '0', cx, cy);
