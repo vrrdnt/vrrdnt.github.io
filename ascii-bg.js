@@ -27,13 +27,17 @@
     '[    0.001337] traps: SIGNAL 11 (core dumped)',
     '[    0.510020] task systemd-journal:168 blocked for more than 120 seconds',
     '[    0.068400] usb 1-1: device descriptor read/64, error -71',
+    '[    0.220045] Instruction Fetch Unit Ext. Error Code: 3',
+    '[    0.130077] cache level: L1, tx: INSN, mem-tx: IRD',
+    '[    0.045678] CPU:3 (17:71:0) MC1_STATUS[Over|CE|MiscV|AddrV|-|-|SyndV|-|-|-]: 0xdc20000000030151',
+    '[    0.098765] IPID: 0x000100b000000000, Syndrome: 0x000000001a030601',
   ];
 
   // Global color (yellow-green phosphor)
   const COLOR_R = 185, COLOR_G = 220, COLOR_B = 40;
 
   // Shared tunables
-  const CELL         = 20;     // grid cell size px
+  const CELL         = 16;     // grid cell size px
   const FONT_SZ      = 11;     // font size px
   const FLASH_CHANCE = 0.0004; // probability per cell per frame of triggering a flash
   const FLASH_PEAK   = 1;      // peak alpha of a flash
@@ -42,7 +46,7 @@
   const FRAME_MS     = 1000 / FPS;
 
   // Radiation tunables
-  const BASE_A         = 0.04;  // base alpha of idle chars
+  const BASE_A         = 0.08;  // base alpha of idle chars
   const SENT_ALPHA     = 0.95;  // alpha when a sentence is shown
   const SENT_HOLD      = 180;   // frames at full alpha before fading (~3s)
   const SENT_FADE      = 0.016; // alpha lost per frame while fading
@@ -52,13 +56,13 @@
   // Cluster tunables
   const CL_SPAWN_MIN     = 4;     // min frames between cluster spawns
   const CL_SPAWN_MAX     = 15;    // max frames between cluster spawns
-  const CL_MAX_CLUSTERS  = 22;    // max simultaneous clusters
+  const CL_MAX_CLUSTERS  = 32;    // max simultaneous clusters
   const CL_FADE_RATE     = 0.005; // alpha decay per frame during fade phase
   const CL_PEAK_HOLD     = 100;   // frames to hold at peak before fading
   const CL_PULSE_SPEED   = 0.04;  // pulsation angular velocity (radians/frame)
-  const CL_PULSE_AMP     = 0.20;  // pulsation amplitude
-  const CL_BASE_ALPHA    = 0.85;  // cluster cell base alpha at peak
-  const CL_BG_ALPHA      = 0.08;  // faint background fill for non-cluster cells
+  const CL_PULSE_AMP     = 1;  // pulsation amplitude
+  const CL_BASE_ALPHA    = 0.95;  // cluster cell base alpha at peak
+  const CL_BG_ALPHA      = 0.16;  // faint background fill for non-cluster cells
   const CL_GROW_FRAMES   = 40;    // frames to grow from seed to full size
 
   // GoL tunables
@@ -92,7 +96,7 @@
   let activeSents    = [];  // { row, startCol, text, alpha, hold, revealed, glitchBlocks }
   let sentSpawnTimer = 0;
   const GLITCH_CHARS = '0123456789abcdef#$%&@!?/\\|=+~^';
-  const SENT_REVEAL_RATE = 2; // chars revealed per frame (typewriter speed)
+  const SENT_REVEAL_RATE = 1; // chars revealed per frame (typewriter speed)
 
   // Self (webcam) mode
   let selfVideo     = null;
@@ -108,7 +112,26 @@
   }
 
   // Cascade character pool — weighted toward × and x for dense triangular texture
-  const CASCADE_CHARS = '××××x×·.:×x×';
+  const CASCADE_CHARS = `
+    ⠁⠂⠃⠄⠅⠆⠇⠈⠉⠊⠋⠌⠍⠎⠏
+    ⠐⠑⠒⠓⠔⠕⠖⠗⠘⠙⠚⠛⠜⠝⠞⠟
+    ⠠⠡⠢⠣⠤⠥⠦⠧⠨⠩⠪⠫⠬⠭⠮⠯
+    ⠰⠱⠲⠳⠴⠵⠶⠷⠸⠹⠺⠻⠼⠽⠾⠿
+    ⡀⡁⡂⡃⡄⡅⡆⡇⡈⡉⡊⡋⡌⡍⡎⡏
+    ⡐⡑⡒⡓⡔⡕⡖⡗⡘⡙⡚⡛⡜⡝⡞⡟
+    ⡠⡡⡢⡣⡤⡥⡦⡧⡨⡩⡪⡫⡬⡭⡮⡯
+    ⡰⡱⡲⡳⡴⡵⡶⡷⡸⡹⡺⡻⡼⡽⡾⡿
+    ⢀⢁⢂⢃⢄⢅⢆⢇⢈⢉⢊⢋⢌⢍⢎⢏
+    ⢐⢑⢒⢓⢔⢕⢖⢗⢘⢙⢚⢛⢜⢝⢞⢟
+    ⢠⢡⢢⢣⢤⢥⢦⢧⢨⢩⢪⢫⢬⢭⢮⢯
+    ⢰⢱⢲⢳⢴⢵⢶⢷⢸⢹⢺⢻⢼⢽⢾⢿
+    ⣀⣁⣂⣃⣄⣅⣆⣇⣈⣉⣊⣋⣌⣍⣎⣏
+    ⣐⣑⣒⣓⣔⣕⣖⣗⣘⣙⣚⣛⣜⣝⣞⣟
+    ⣠⣡⣢⣣⣤⣥⣦⣧⣨⣩⣪⣫⣬⣭⣮⣯
+    ⣰⣱⣲⣳⣴⣵⣶⣷⣸⣹⣺⣻⣼⣽⣾⣿
+    ▶◀▼▲◆◇○●◐◑◒◓◔◕◖◗ꙮ֍✤
+  `;
+
   function cchar() {
     return CASCADE_CHARS[Math.random() * CASCADE_CHARS.length | 0];
   }
