@@ -56,6 +56,15 @@ const MEAL_TYPES = [
     optional: ['Fruit'],
     maxSlots: 4,
   },
+  {
+    id: 'potpie',
+    name: 'Pot Pie',
+    icon: '\u{1F967}',
+    desc: 'Grain crust + meat/veg filling (1.22)',
+    requires: ['Grain'],
+    optional: ['Protein', 'Vegetable', 'Fruit'],
+    maxSlots: 4,
+  },
 ];
 
 // Food items with their nutrition data from game JSON

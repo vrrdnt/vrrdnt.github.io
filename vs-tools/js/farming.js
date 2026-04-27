@@ -20,6 +20,10 @@ const CROPS = [
   { id: 'peanut',     name: 'Peanut',      icon: 'img/farming/peanut.png',     n: -10, p: 15, k: 20, days: 5.0 },
   { id: 'soybean',    name: 'Soybean',     icon: 'img/farming/soybean.png',    n: -15, p: 15, k: 20, days: 5.0 },
   { id: 'pineapple',  name: 'Pineapple',   icon: 'img/farming/pineapple.png',  n: 25, p: 20, k: 30, days: 7.0 },
+  // 1.22 — herb crops; used to craft stinkbait for fishing.
+  // N/P/K values are placeholders pending in-game verification.
+  { id: 'fennel',     name: 'Fennel',      icon: 'img/farming/fennel.png',     n: 25, p: 15, k: 25, days: 4.25 },
+  { id: 'licorice',   name: 'Licorice',    icon: 'img/farming/licorice.png',   n: 25, p: 15, k: 25, days: 4.25 },
 ];
 
 const FERTILIZERS = [

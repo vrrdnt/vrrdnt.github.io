@@ -461,24 +461,74 @@ function copyShareLink() {
   });
 }
 
+// === Compute valid nugget counts ===
+// Constraint-aware allocation: each metal's nugget count must, when converted
+// back to a percentage of the total, fall within its [min%, max%] recipe range.
+// Naive independent rounding can land the result OUTSIDE the recipe range
+// (e.g. 88% Cu / 12% Sn at multiplier=2 → 35/5 nuggets → 87.5% / 12.5% = invalid),
+// so we round-with-clamp and redistribute the remainder to the metal whose
+// adjusted count stays closest to its slider target.
+function computeNuggetCounts(alloy, sliderValues, totalUnits) {
+  const UNITS_PER_NUGGET = 5;
+  const totalNuggets = Math.round(totalUnits / UNITS_PER_NUGGET);
+  const components = alloy.components;
+  const N = components.length;
+
+  // Real-valued targets and integer-valid ranges per metal
+  const targets = components.map(c => totalNuggets * sliderValues[c.metal] / 100);
+  const ranges  = components.map(c => ({
+    min: Math.ceil (c.min * totalNuggets / 100),
+    max: Math.floor(c.max * totalNuggets / 100),
+  }));
+
+  // Initial allocation: round to nearest, clamped to the valid integer range
+  const nuggets = targets.map((t, i) =>
+    Math.max(ranges[i].min, Math.min(ranges[i].max, Math.round(t)))
+  );
+
+  // Adjust until the sum matches totalNuggets, preferring moves that
+  // keep each metal closest to its slider target
+  let diff = totalNuggets - nuggets.reduce((s, n) => s + n, 0);
+  let safety = N * 8 + 8;
+  while (diff !== 0 && safety-- > 0) {
+    const dir = diff > 0 ? 1 : -1;
+    let bestIdx = -1;
+    let bestPenalty = Infinity;
+    for (let i = 0; i < N; i++) {
+      if (dir > 0 && nuggets[i] >= ranges[i].max) continue;
+      if (dir < 0 && nuggets[i] <= ranges[i].min) continue;
+      const penalty = Math.abs((nuggets[i] + dir) - targets[i]);
+      if (penalty < bestPenalty) { bestPenalty = penalty; bestIdx = i; }
+    }
+    if (bestIdx === -1) break;  // infeasible at this batch size — shouldn't happen for valid alloys
+    nuggets[bestIdx] += dir;
+    diff -= dir;
+  }
+
+  return nuggets;
+}
+
 // === Update results ===
 function updateResults() {
   const alloy = selectedAlloy;
   if (!alloy) return;
 
-  // Calculate nuggets for the given multiplier
   // 1 ingot = 100 units, 1 nugget = 5 units, so 1 ingot = 20 nuggets
   const UNITS_PER_NUGGET = 5;
-  const UNITS_PER_INGOT = 100;
+  const UNITS_PER_INGOT  = 100;
   const totalUnits = UNITS_PER_INGOT * multiplier;
-  const nuggets = {};
-  let totalNuggets = 0;
 
-  for (const comp of alloy.components) {
-    const units = Math.round(totalUnits * sliderValues[comp.metal] / 100);
-    const count = Math.round(units / UNITS_PER_NUGGET);
-    nuggets[comp.metal] = count;
-    totalNuggets += count;
+  const counts = computeNuggetCounts(alloy, sliderValues, totalUnits);
+  const nuggets = {};
+  const actualPct = {};
+  let totalNuggets = 0;
+  let drift = false;
+  for (let i = 0; i < alloy.components.length; i++) {
+    const m = alloy.components[i].metal;
+    nuggets[m]   = counts[i];
+    actualPct[m] = (counts[i] * UNITS_PER_NUGGET / totalUnits) * 100;
+    totalNuggets += counts[i];
+    if (Math.abs(actualPct[m] - sliderValues[m]) >= 0.5) drift = true;
   }
 
   // Ingots produced (each ingot = 100 units)
@@ -490,33 +540,44 @@ function updateResults() {
   document.getElementById('ingotLabel').textContent = `${alloy.name} ingot${multiplier !== 1 ? 's' : ''}`;
   nuggetTotal.textContent = `${totalNuggets} nuggets total`;
 
-  // Nugget breakdown
+  // Nugget breakdown — show actual % achieved alongside count
   nuggetBreakdown.innerHTML = '';
   for (const comp of alloy.components) {
-    const metal = METALS[comp.metal];
-    const count = nuggets[comp.metal];
+    const metal  = METALS[comp.metal];
+    const count  = nuggets[comp.metal];
+    const actual = actualPct[comp.metal];
     const row = document.createElement('div');
     row.className = 'nugget-row';
     row.innerHTML = `
       <img class="metal-icon" src="${metal.nugget}" alt="${metal.name}" width="34" height="34">
       <span class="nugget-row-name">${metal.name}</span>
       <span class="nugget-row-count">${count}</span>
-      <span class="nugget-row-unit">nuggets</span>
+      <span class="nugget-row-unit">nuggets &middot; ${actual.toFixed(1)}%</span>
     `;
     nuggetBreakdown.appendChild(row);
   }
 
-  // Crucible visual bar
+  // Hint shown when slider position can't be matched exactly at this batch size
+  const existingNote = nuggetBreakdown.parentElement.querySelector('.recipe-snap-note');
+  if (existingNote) existingNote.remove();
+  if (drift) {
+    const note = document.createElement('div');
+    note.className = 'recipe-snap-note';
+    note.style.cssText = 'margin-top:0.6rem;font-size:0.85em;color:var(--text-dim);font-style:italic;';
+    note.textContent = `Recipe snapped to nearest valid ratio for ${multiplier} ingot${multiplier !== 1 ? 's' : ''}. Increase batch size for finer control.`;
+    nuggetBreakdown.parentElement.appendChild(note);
+  }
+
+  // Crucible visual bar — uses ACTUAL recipe %, so the bar reflects what
+  // will actually go in the crucible (not just where the slider points)
   crucibleVisual.innerHTML = '';
   for (const comp of alloy.components) {
     const metal = METALS[comp.metal];
-    const pct = sliderValues[comp.metal];
+    const pct = actualPct[comp.metal];
     const seg = document.createElement('div');
     seg.className = 'crucible-segment';
     seg.style.width = `${pct}%`;
     seg.style.background = metal.color;
-    // seg.innerHTML = `<span class="crucible-segment-tooltip">${metal.name}: ${pct}%</span>`;
-    // Weird z-index issue here
     crucibleVisual.appendChild(seg);
   }
 

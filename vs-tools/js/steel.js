@@ -44,7 +44,7 @@ const STEEL_STEPS = [
     id: 'smelt-blooms',
     name: 'Smelt Iron Blooms',
     phase: 'preparation',
-    desc: 'Smelt iron ore in a bloomery furnace to produce iron blooms. Each bloom requires ore and charcoal.',
+    desc: 'Smelt iron ore in a bloomery furnace to produce iron blooms. Each bloom requires ore and charcoal. (1.22) Attaching bellows to the bloomery significantly speeds up smelting.',
     materials: (batches) => [
       { ...MATERIALS.ironbloom, qty: batches * 16, note: `${batches * 16} blooms needed` },
     ],
@@ -54,7 +54,7 @@ const STEEL_STEPS = [
     id: 'work-blooms',
     name: 'Work Iron Blooms on Anvil',
     phase: 'preparation',
-    desc: 'Hammer iron blooms on an iron anvil to remove slag and produce iron ingots. Use Split mode to remove impurities.',
+    desc: 'Hammer iron blooms on an iron anvil to remove slag and produce iron ingots. Use Split mode to remove impurities. (1.22) Equip metal tongs (10–100× durability vs wooden) for extended forging sessions.',
     materials: (batches) => [
       { ...MATERIALS.ironIngot, qty: batches * 16, note: `${batches * 16} iron ingots produced` },
     ],
@@ -107,7 +107,7 @@ const STEEL_STEPS = [
     id: 'refine-steel',
     name: 'Refine on Anvil to Steel',
     phase: 'production',
-    desc: 'Work blister steel ingots on an iron anvil (by hand or with a helve hammer) to produce usable steel ingots.',
+    desc: 'Work blister steel ingots on an iron anvil (by hand or with a helve hammer) to produce usable steel ingots. (1.22) Steel anvils are now craftable in survival as a higher-tier upgrade. Once tool heads are forged, you can quench/temper them for ±durability/power and grind blades on a grinding wheel for a crit-damage bonus.',
     materials: (batches) => [
       { ...MATERIALS.steelIngot, qty: batches * 16, note: `${batches * 16} steel ingots produced` },
     ],
