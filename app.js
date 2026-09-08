@@ -268,4 +268,3 @@ document.addEventListener('pointermove', event => {
   hoveredEntry = entry;
 }, { passive: true });
 loadProjects();
-
