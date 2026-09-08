@@ -1,0 +1,12 @@
+{
+  "name": "vrrdnt-terminal",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "sync": "node scripts/sync-repositories.mjs",
+    "build": "node scripts/build.mjs",
+    "test": "node --test"
+  },
+  "engines": { "node": ">=22" }
+}

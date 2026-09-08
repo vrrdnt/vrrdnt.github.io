@@ -1,0 +1,18 @@
+{
+  "username": "vrrdnt",
+  "activeDays": 90,
+  "excluded": [],
+  "overrides": {
+    "ae2-emi-crafting": { "category": "mods", "description": "AE2 and EMI crafting integration, with a Forge port for Monifactory." },
+    "open-freemode": { "category": "games" },
+    "w50": { "category": "tools" },
+    "cropsnh-seedcontrol": { "category": "mods" },
+    "minecraft": { "category": "tools" },
+    "paperclips": { "category": "games", "description": "A non-commercial Universal Paperclips fan reskin, preserving the original mechanics and progression." },
+    "vrrdnt.github.io": { "category": "web", "description": "Personal website, repository index, and Vintage Story tools." },
+    "sendtokindle": { "category": "tools", "description": "Send articles and documents to your Kindle from the command line." },
+    "gtnh-pelican-egg": { "category": "tools", "description": "A Pelican server egg for GregTech New Horizons." },
+    "vs-storagemod": { "category": "mods" },
+    "StoryForge": { "category": "tools" }
+  }
+}
