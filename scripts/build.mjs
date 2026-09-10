@@ -2,7 +2,7 @@ import { cp, mkdir, readFile, writeFile } from 'node:fs/promises';
 const root = new URL('../', import.meta.url);
 const output = new URL('dist/', root);
 await mkdir(output, { recursive: true });
-for (const file of ['index.html', 'terminal.css', 'app.js', 'life.js', 'life-core.js', 'project-model.js', 'favicon.svg', 'vs-tools']) {
+for (const file of ['index.html', 'terminal.css', 'app.js', 'life.js', 'life-core.js', 'life-icons.js', 'life-patterns.js', 'project-model.js', 'favicon.svg', 'vs-tools']) {
   await cp(new URL(file, root), new URL(file, output), { recursive: true });
 }
 await mkdir(new URL('data/', output), { recursive: true });

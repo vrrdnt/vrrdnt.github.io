@@ -51,26 +51,28 @@
         <div class="section-register" aria-hidden="true"><span>02 / GAME UTILITIES</span><span class="register-artifact">⊞ ── ╱╱</span></div>
         <div class="section-heading"><h2 id="tools-title"><span class="prompt-user">vrrdnt@web</span><span class="prompt-path">:~</span>$ ls tools/vintage-story</h2></div>
         <div class="tool-list">
-          <a class="tool-link" href="/vs-tools/alloys.html"><span class="entry-origin" aria-hidden="true">›</span><span><strong>alloy-calculator</strong><small>Calculate metal ratios for alloys.</small></span><span>↗</span></a>
-          <a class="tool-link" href="/vs-tools/meals.html"><span class="entry-origin" aria-hidden="true">›</span><span><strong>meal-planner</strong><small>Balance all five food groups.</small></span><span>↗</span></a>
-          <a class="tool-link" href="/vs-tools/armor.html"><span class="entry-origin" aria-hidden="true">›</span><span><strong>armor-calculator</strong><small>Compare armor and damage reduction.</small></span><span>↗</span></a>
-          <a class="tool-link" href="/vs-tools/farming.html"><span class="entry-origin" aria-hidden="true">›</span><span><strong>crop-rotation-planner</strong><small>Plan rotations around soil N/P/K.</small></span><span>↗</span></a>
-          <a class="tool-link" href="/vs-tools/steel.html"><span class="entry-origin" aria-hidden="true">›</span><span><strong>steel-making-tracker</strong><small>Track materials from iron ore to steel.</small></span><span>↗</span></a>
+          <a class="tool-link" href="/vs-tools/alloys.html"><span class="entry-origin" aria-hidden="true">01</span><span><span class="tool-kind">METALLURGY <span aria-hidden="true">╱╱</span></span><strong>alloy-calculator</strong><small>Calculate metal ratios for alloys.</small></span><span aria-hidden="true">↗</span></a>
+          <a class="tool-link" href="/vs-tools/meals.html"><span class="entry-origin" aria-hidden="true">02</span><span><span class="tool-kind">NUTRITION <span aria-hidden="true">╱╱</span></span><strong>meal-planner</strong><small>Balance all five food groups.</small></span><span aria-hidden="true">↗</span></a>
+          <a class="tool-link" href="/vs-tools/armor.html"><span class="entry-origin" aria-hidden="true">03</span><span><span class="tool-kind">COMBAT <span aria-hidden="true">╱╱</span></span><strong>armor-calculator</strong><small>Compare armor and damage reduction.</small></span><span aria-hidden="true">↗</span></a>
+          <a class="tool-link" href="/vs-tools/farming.html"><span class="entry-origin" aria-hidden="true">04</span><span><span class="tool-kind">AGRICULTURE <span aria-hidden="true">╱╱</span></span><strong>crop-rotation-planner</strong><small>Plan rotations around soil N/P/K.</small></span><span aria-hidden="true">↗</span></a>
+          <a class="tool-link" href="/vs-tools/steel.html"><span class="entry-origin" aria-hidden="true">05</span><span><span class="tool-kind">PRODUCTION <span aria-hidden="true">╱╱</span></span><strong>steel-making-tracker</strong><small>Track materials from iron ore to steel.</small></span><span aria-hidden="true">↗</span></a>
         </div>
       </section>
       <section id="archive" class="content-section" aria-labelledby="archive-title">
         <div class="section-register" aria-hidden="true"><span>03 / ARCHIVE + ACTIVITY</span><span class="register-artifact">∷ ━━ ▪</span></div>
         <div class="section-heading"><h2 id="archive-title"><span class="prompt-user">vrrdnt@web</span><span class="prompt-path">:~</span>$ ls archive</h2></div>
-        <button class="archive-button" id="browse-archive">older repositories <span id="archive-count">↗</span></button>
+        <button class="archive-button" id="browse-archive"><span class="archive-label"><span class="archive-artifact" aria-hidden="true">░ ▒ ▓</span>older repositories</span><span id="archive-count">↗</span></button>
         <h3 class="subheading">recent default-branch commits</h3>
         <div id="activity-list"><p class="loading-message">Loading commits…</p></div>
       </section>
       <section id="about" class="content-section" aria-labelledby="about-title">
         <div class="section-register" aria-hidden="true"><span>04 / ABOUT</span><span class="register-artifact">⌁ ── ░</span></div>
         <div class="section-heading"><h2 id="about-title"><span class="prompt-user">vrrdnt@web</span><span class="prompt-path">:~</span>$ cat about.txt</h2></div>
-        <p>Tools and utilities, mostly for games.</p>
-        <div class="contributions"><h3 class="subheading">contributions</h3><a href="https://getstoryforge.app">StoryForge <span>Vintage Story launcher ↗</span></a><a href="https://github.com/Grantapher/ValheimPlus">ValheimPlus <span>Valheim mod ↗</span></a></div>
-        <details class="about-field"><summary>conway.txt</summary><p>Two glider guns start near the upper-left corner and send patterns outward under Conway’s Game of Life (B3/S23). Older activity becomes a sparser dithered texture; dead-cell traces fade away. This affects rendering, not the simulation.</p><p>Scroll to release patterns from repository entries. Hover or activate an entry to seed at that point. Use pause, resume, clear, or seed glider in the command line. Reduced-motion preferences start the field paused.</p></details>
+        <div class="about-dossier">
+          <div class="about-intro"><span class="dossier-label" aria-hidden="true">┌─ ABOUT.TXT</span><p id="about-copy">Tools and utilities, mostly for games.</p><span class="dossier-end" aria-hidden="true">└── ∷</span></div>
+          <div class="contributions"><h3 class="subheading">contributions</h3><a href="https://getstoryforge.app"><strong>StoryForge</strong><span>Vintage Story launcher ↗</span></a><a href="https://github.com/Grantapher/ValheimPlus"><strong>ValheimPlus</strong><span>Valheim mod ↗</span></a></div>
+        </div>
+        <details class="about-field"><summary>conway.txt <span class="field-file-tag" aria-hidden="true">B3/S23</span></summary><p>Two glider guns start near the upper-left corner and send patterns outward under Conway’s Game of Life (B3/S23). Older activity becomes a sparser dithered texture; dead-cell traces fade away. This affects rendering, not the simulation.</p><p>Each repository has its own looping oscillator in the numbered margin. Hover over a miniature for its name and period. The miniatures pause with the field and when off-screen.</p><p>Scroll to release patterns from repository entries. Hover or activate an entry to seed at that point. Use pause, resume, clear, or seed glider in the command line. Reduced-motion preferences start the field and miniatures paused.</p></details>
       </section>
       <footer class="page-footer"><a href="#projects">↑ projects</a><a href="https://github.com/vrrdnt/vrrdnt.github.io">site source ↗</a></footer>
     </main>

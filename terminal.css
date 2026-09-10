@@ -7,6 +7,7 @@
   --muted: #8a9e7b;
   --border: #2e3b28;
   --amber: #d8b77b;
+  --ice: #9cbab4;
   --mono: 'JetBrains Mono', 'Courier New', monospace;
 }
 * { box-sizing: border-box; }
@@ -66,14 +67,14 @@ main { padding: 28px 32px 0; outline: none; }
 .repo-card { --entry-accent: var(--green); border: 0; border-top: 1px solid var(--border); position: relative; margin-bottom: 10px; background: #0b100bf5; }
 .repo-card[data-category=web], .repo-card[data-category=games] { --entry-accent: var(--amber); }
 .repo-card:nth-child(even) { background: #10170ff5; }
-.repo-card summary { list-style: none; padding: 16px 20px 18px 86px; position: relative; cursor: pointer; }
+.repo-card summary { list-style: none; padding: 16px 20px 18px 136px; position: relative; cursor: pointer; }
 .repo-card summary::-webkit-details-marker { display: none; }
 .repo-card summary:hover, .repo-card[open] summary { background: #b9db8010; }
 .repo-card summary:focus-visible { outline-offset: -2px; }
 .entry-origin { color: var(--green); width: 15px; flex-shrink: 0; }
-.repo-card .entry-origin { position: absolute; left: 16px; top: 16px; bottom: 18px; width: 48px; border-right: 1px solid var(--border); color: var(--entry-accent); }
+.repo-card .entry-origin { position: absolute; left: 16px; top: 16px; bottom: 18px; width: 96px; border-right: 1px solid var(--border); color: var(--entry-accent); }
 .entry-number { display: block; font-size: 12px; line-height: 1.5; font-variant-numeric: tabular-nums; letter-spacing: .08em; }
-.entry-glyph { display: block; margin-top: 10px; font-size: 30px; line-height: 1; }
+.entry-life { display: block; width: 72px; height: 72px; margin: 8px 0 0 3px; color: inherit; image-rendering: pixelated; }
 .repo-classification { display: flex; align-items: center; gap: 14px; margin-bottom: 4px; color: var(--entry-accent); font-size: 12px; line-height: 1.5; }
 .entry-artifact { opacity: .55; letter-spacing: .12em; }
 .repo-heading { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; padding-right: 40px; }
@@ -88,12 +89,12 @@ main { padding: 28px 32px 0; outline: none; }
 .repo-language { color: #b1c3a2; }
 .repo-bottomline time { margin-left: auto; }
 .repo-type { text-transform: uppercase; letter-spacing: .12em; }
-.repo-details { margin: 0 20px 0 86px; border-left: 1px solid var(--border); padding: 12px 16px 18px; }
+.repo-details { margin: 0 20px 0 136px; border-left: 1px solid var(--border); padding: 12px 16px 18px; }
 .repo-details p { font-size: 14px; color: var(--text); overflow-wrap: anywhere; }
 .repo-actions { display: flex; flex-wrap: wrap; gap: 5px 20px; margin-top: 8px; }
 .repo-actions a { display: inline-flex; align-items: center; min-height: 40px; font-size: 14px; color: var(--green); }
 .repo-actions a:hover { text-decoration: underline; text-underline-offset: 4px; }
-.sync-note { margin: 18px 0 0 86px; max-width: 790px; font-size: 12px; color: var(--muted); }
+.sync-note { margin: 18px 0 0 136px; max-width: 790px; font-size: 12px; color: var(--muted); }
 .sync-note::before { content: '# '; }
 .tool-link { display: flex; gap: 10px; align-items: baseline; padding: 16px 10px 16px 3px; border-bottom: 1px solid var(--border); }
 .tool-link strong { color: var(--bright); font-size: 16px; font-weight: 500; }
@@ -152,9 +153,58 @@ main { padding: 28px 32px 0; outline: none; }
 .terminal-window::before { content: ''; position: absolute; left: -19px; top: 128px; bottom: 155px; width: 10px; opacity: .4; pointer-events: none; background: repeating-linear-gradient(to bottom, var(--green) 0 1px, transparent 1px 64px) left / 10px 100% no-repeat, repeating-linear-gradient(to bottom, var(--green) 0 1px, transparent 1px 8px) left / 4px 100% no-repeat; }
 .content-section:not(:first-child)::before { content: ''; display: block; height: 10px; margin: 0 0 24px; border-top: 1px solid var(--border); background: repeating-linear-gradient(90deg, var(--muted) 0 1px, transparent 1px 8px) left top / 96px 5px no-repeat; opacity: .7; }
 .section-heading::before { content: ''; width: 7px; height: 7px; flex-shrink: 0; border: 1px solid var(--green); transform: rotate(45deg); }
-.repo-card summary::before { content: ''; position: absolute; left: 0; top: -1px; width: 48px; height: 3px; background: var(--entry-accent); }
+.repo-card summary::before { content: ''; position: absolute; left: 0; top: -1px; width: 96px; height: 3px; background: var(--entry-accent); }
 .repo-card summary::after { content: ''; position: absolute; right: 0; bottom: 0; width: 14px; height: 7px; border-right: 1px solid var(--entry-accent); border-bottom: 1px solid var(--entry-accent); opacity: .5; }
 .repo-card[open] .repo-details { border-image: linear-gradient(var(--green), var(--border)) 1; }
+/* Utilities: compact amber instrument panels, with diagonal registration marks. */
+#tools .section-register, #tools .register-artifact { color: var(--amber); }
+.tool-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.tool-link { position: relative; gap: 14px; padding: 18px 16px; background: #15160ff5; border: 1px solid #45432f; border-left: 3px solid var(--amber); align-items: flex-start; }
+.tool-link:hover { background: #202318; }
+.tool-link > span:nth-child(2) { min-width: 0; }
+.tool-link .entry-origin { width: 22px; color: var(--amber); font-size: 12px; padding-top: 2px; }
+.tool-kind { display: block; color: var(--amber); font-size: 12px; letter-spacing: .08em; margin-bottom: 5px; }
+.tool-kind span { margin-left: 8px; opacity: .55; }
+.tool-link strong { display: block; overflow-wrap: anywhere; }
+.tool-link strong, .tool-link small { background: transparent; }
+.tool-link > span:last-child { color: var(--amber); }
+.tool-link:last-child:nth-child(odd) { grid-column: 1 / -1; }
+/* Archive: cool dotted rules and a dated vertical log. */
+#archive .section-register, #archive .register-artifact { color: var(--ice); }
+#archive .section-register::after { border-bottom-style: dotted; }
+.archive-button { display: flex; justify-content: space-between; align-items: center; gap: 16px; width: 100%; margin: 0; padding: 18px 20px; border: 1px dashed #4c6058; color: var(--bright); background: #101715f5; font-size: 16px; }
+.archive-button::before { content: none; }
+.archive-button span { margin: 0; }
+.archive-button .archive-label { display: flex; align-items: center; gap: 18px; color: var(--bright); }
+.archive-button .archive-artifact { color: var(--ice); white-space: nowrap; }
+#archive-count { font-size: 14px; color: var(--ice); white-space: nowrap; }
+#archive .subheading { margin: 28px 0 14px; color: var(--ice); font-size: 12px; letter-spacing: .04em; }
+#activity-list { position: relative; background: #0b100ef5; }
+.log-entry { grid-template-columns: 90px minmax(0, 1fr) 16px; position: relative; padding: 16px 14px 16px 0; border-bottom-style: dotted; gap: 28px; }
+.log-entry::before { content: ''; position: absolute; left: 102px; top: 0; bottom: 0; border-left: 1px solid #34483f; }
+.log-entry::after { content: ''; position: absolute; left: 99px; top: 23px; width: 7px; height: 7px; border: 1px solid var(--ice); background: var(--bg); }
+.log-entry:hover { background: #9cbab40a; }
+.log-entry time { color: var(--ice); text-align: right; width: 100%; padding-top: 2px; }
+.log-entry strong { display: block; font-size: 15px; overflow-wrap: anywhere; }
+.log-entry p { margin-top: 4px; }
+.log-entry > div, .log-entry time { background: transparent; }
+.log-entry > span:last-child { color: var(--ice); }
+/* About: a quieter text file and a separate contribution register. */
+#about .section-register { color: var(--text); }
+#about .section-register::after { border-bottom: 0; }
+.about-dossier { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); border: 1px solid var(--border); background: #0d120df5; }
+.about-intro { padding: 24px; }
+.dossier-label, .dossier-end { display: block; color: var(--muted); font-size: 12px; letter-spacing: .08em; }
+#about-copy { margin: 20px 0; max-width: 24ch; color: var(--bright); font-size: 20px; line-height: 1.6; }
+.contributions { padding: 24px; border-left: 1px dashed var(--border); }
+.contributions .subheading { margin: 0 0 12px; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+.contributions > a { display: block; margin: 0; padding: 12px 0; border-top: 1px solid var(--border); background: transparent; }
+.contributions > a strong { display: block; font-size: 16px; font-weight: 500; }
+.contributions > a span { display: block; font-size: 14px; margin-top: 4px; }
+.about-field { margin: 12px 0 0; border: 1px solid var(--border); background: #090d09f5; }
+.about-field summary { padding: 14px 20px; font-size: 14px; background: transparent; width: auto; }
+.field-file-tag { float: right; color: var(--muted); font-size: 12px; }
+.about-field p { margin: 0 20px 16px; font-size: 14px; color: var(--text); background: transparent; }
 @media (max-width: 1150px) {
   .terminal-window { margin: 0; border: 0; max-width: none; }
   .registration-corners i:nth-child(1), .registration-corners i:nth-child(3) { left: 3px; }
@@ -191,26 +241,31 @@ main { padding: 28px 32px 0; outline: none; }
   select { min-height: 44px; }
   .project-search { width: 100%; margin-bottom: 4px; font-size: 12px; }
   .project-search input { width: 100%; flex: 1; font-size: 16px; min-height: 40px; }
-  .repo-card summary { padding: 14px 12px 16px 56px; }
-  .repo-card .entry-origin { top: 14px; left: 10px; width: 32px; }
-  .entry-glyph { font-size: 24px; }
-  .repo-card summary::before { width: 32px; }
+  .repo-card summary { padding: 14px 12px 16px 96px; }
+  .repo-card .entry-origin { top: 14px; left: 10px; width: 68px; }
+  .entry-life { width: 56px; height: 56px; margin-left: 0; }
+  .repo-card summary::before { width: 68px; }
   .repo-heading { gap: 4px 8px; padding-right: 24px; }
   .repo-card h3 { font-size: 17px; }
   .inspect-label { right: 10px; top: 36px; width: 24px; height: 24px; }
   .repo-bottomline { gap: 4px 12px; }
   .repo-bottomline time { margin-left: 0; }
-  .repo-details { margin-left: 56px; margin-right: 12px; padding-left: 12px; }
+  .repo-details { margin-left: 96px; margin-right: 12px; padding-left: 12px; }
   .sync-note { margin-left: 0; }
-  .tool-link { padding: 12px 5px 12px 0; gap: 5px; }
+  .tool-list { grid-template-columns: minmax(0, 1fr); }
+  .tool-link { padding: 16px 12px; gap: 10px; }
   .tool-link strong { font-size: 16px; }
   .tool-link small { font-size: 14px; }
-  .log-entry { padding-left: 20px; grid-template-columns: 50px minmax(0, 1fr) 12px; gap: 8px; }
-  .subheading, .contributions > a, .about-field { margin-left: 20px; }
-  .contributions > a span { font-size: 11px; }
+  .log-entry { padding-left: 0; grid-template-columns: 58px minmax(0, 1fr) 12px; gap: 20px; }
+  .log-entry::before { left: 67px; }
+  .log-entry::after { left: 64px; }
+  .subheading { margin-left: 20px; }
+  .about-dossier { grid-template-columns: minmax(0, 1fr); }
+  .about-intro, .contributions { padding: 20px; }
+  .contributions { border-left: 0; border-top: 1px dashed var(--border); }
   #about > p { padding-left: 20px; }
-  .archive-button { margin-left: 10px; font-size: 12px; }
-  .archive-button span { margin-left: 8px; }
+  .archive-button { padding: 16px 12px; flex-wrap: wrap; }
+  .archive-button .archive-label { gap: 12px; }
   .page-footer { padding-left: 20px; padding-bottom: 185px; }
   .field-status { padding: 0 12px; gap: 10px; font-size: 9px; }
   .field-status .emission-status { display: none; }

@@ -1,8 +1,11 @@
 import { isActive, selectProjects } from './project-model.js';
 import { startLife } from './life.js';
+import { assignOscillators, startLifeIcons } from './life-icons.js';
 
 const $ = selector => document.querySelector(selector);
 const life = startLife();
+const lifeIcons = startLifeIcons();
+let repoOscillators = new Map();
 const state = { repos: [], activity: [], days: 90, scope: 'active', category: 'all', query: '' };
 
 function el(tag, className, text) {
@@ -27,8 +30,6 @@ function age(date) {
   return days === 0 ? 'today' : days < 365 ? days + 'd ago' : Math.floor(days / 365) + 'y ago';
 }
 
-const categoryGlyphs = { mods: '⌘', games: '◈', tools: '⊞', web: '⌁', other: '∷' };
-
 function repoCard(repo, index) {
   const card = el('details', 'repo-card');
   card.id = 'repo-' + repo.name;
@@ -37,7 +38,7 @@ function repoCard(repo, index) {
   const origin = el('span', 'entry-origin');
   origin.setAttribute('aria-hidden', 'true');
   origin.append(el('span', 'entry-number', String(index + 1).padStart(2, '0')),
-    el('span', 'entry-glyph', categoryGlyphs[repo.category] || categoryGlyphs.other));
+    lifeIcons.create(repoOscillators.get(repo.name)));
   const classification = el('div', 'repo-classification');
   classification.append(el('span', 'repo-type', repo.category));
   const artifact = el('span', 'entry-artifact', ['░▒ ▰ ──', '╱╱ ─ ▪', '─ ▰ ∷', '▪ ── ╱'][index % 4]);
@@ -82,6 +83,7 @@ function renderProjects() {
   const list = $('#project-list');
   const projects = selectProjects(state.repos, state);
   list.replaceChildren(...projects.map(repoCard));
+  lifeIcons.refresh();
   if (!projects.length) {
     const empty = el('div', 'empty-message', 'No projects match this view.');
     const reset = el('button', '', 'Show all repositories ↗');
@@ -121,6 +123,7 @@ async function loadProjects() {
     const data = await response.json();
     if (!Array.isArray(data.repos) || !Number.isFinite(Date.parse(data.syncedAt))) throw new Error('Invalid snapshot');
     state.repos = data.repos;
+    repoOscillators = assignOscillators(state.repos);
     state.activity = data.activity || [];
     state.days = data.activeDays;
     $('#active-days').textContent = state.days + 'd';
@@ -196,7 +199,7 @@ function runCommand(command) {
   if (verb === 'help') {
     report('ls [--all | --archive]  list repositories\nfind <text>            search all repositories\nopen <repository>      inspect a repository\ncd projects|tools|archive|about\nseed glider|spaceship|pulsar|pentomino|gun\npause / resume / clear  control the Conway field\n↑ ↓ command history    Esc dismiss output');
   } else if (verb === 'cat' && ['about.txt', 'conway.txt'].includes(argument)) {
-    report(argument === 'about.txt' ? $('#about > p').textContent : [...document.querySelectorAll('.about-field p')].map(p => p.textContent).join('\n\n'));
+    report(argument === 'about.txt' ? $('#about-copy').textContent : [...document.querySelectorAll('.about-field p')].map(p => p.textContent).join('\n\n'));
   } else if (verb === 'ls' && ['archive', 'tools', 'tools/vintage-story'].includes(argument)) {
     document.getElementById(argument === 'archive' ? 'archive' : 'tools').scrollIntoView();
     output.hidden = true;

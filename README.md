@@ -47,6 +47,8 @@ repository push date. Source and Releases links work without commit metadata.
 
 ## Interactions
 
+Repository margins contain distinct looping B3/S23 oscillators from a 32-pattern catalog. Assignments use the full repository snapshot so filtering and sorting preserve each miniature. The frames share the field's pause/resume and reduced-motion preference, and stop advancing off-screen or in a hidden tab. Hover a miniature for its name and period. Seed names and discoverers are retained in `life-patterns.js` from the [RLE catalog](https://github.com/macmade/GameOfLife/tree/master/GameOfLife/Library/Oscillators); tests verify every loop with the existing Life engine. Utilities use amber instrument panels, activity uses a muted teal timeline, and About uses a framed text-file layout.
+
 life-core.js implements Conway B3/S23 with dead cells outside the finite boundary.
 Two upper-left Gosper glider guns send gliders along parallel outward lanes.
 There is no periodic random reseeding; clear removes the sources as well.
