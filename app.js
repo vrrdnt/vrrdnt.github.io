@@ -27,26 +27,36 @@ function age(date) {
   return days === 0 ? 'today' : days < 365 ? days + 'd ago' : Math.floor(days / 365) + 'y ago';
 }
 
-function repoCard(repo) {
+const categoryGlyphs = { mods: '⌘', games: '◈', tools: '⊞', web: '⌁', other: '∷' };
+
+function repoCard(repo, index) {
   const card = el('details', 'repo-card');
   card.id = 'repo-' + repo.name;
+  card.dataset.category = repo.category;
   const summary = el('summary');
-  const origin = el('span', 'entry-origin', '›');
+  const origin = el('span', 'entry-origin');
   origin.setAttribute('aria-hidden', 'true');
+  origin.append(el('span', 'entry-number', String(index + 1).padStart(2, '0')),
+    el('span', 'entry-glyph', categoryGlyphs[repo.category] || categoryGlyphs.other));
+  const classification = el('div', 'repo-classification');
+  classification.append(el('span', 'repo-type', repo.category));
+  const artifact = el('span', 'entry-artifact', ['░▒ ▰ ──', '╱╱ ─ ▪', '─ ▰ ∷', '▪ ── ╱'][index % 4]);
+  artifact.setAttribute('aria-hidden', 'true');
+  classification.append(artifact);
   const heading = el('div', 'repo-heading');
   heading.append(el('h3', '', repo.name));
   if (repo.fork) heading.append(el('span', 'repo-badge', 'fork'));
   if (repo.archived) heading.append(el('span', 'repo-badge', 'archived'));
   if (repo.featured) heading.append(el('span', 'repo-badge', 'featured'));
-  const inspect = el('span', 'inspect-label', '[+]');
+  const inspect = el('span', 'inspect-label', '+');
   inspect.setAttribute('aria-hidden', 'true');
   heading.append(inspect);
   const bottom = el('div', 'repo-bottomline');
   const time = el('time', '', 'pushed ' + age(repo.pushedAt));
   time.dateTime = repo.pushedAt;
   time.title = new Date(repo.pushedAt).toLocaleString();
-  bottom.append(el('span', '', repo.language), el('span', 'repo-type', repo.category), time);
-  summary.append(origin, heading, el('p', 'repo-description', repo.description), bottom);
+  bottom.append(el('span', 'repo-language', repo.language), time);
+  summary.append(origin, classification, heading, el('p', 'repo-description', repo.description), bottom);
   const detail = el('div', 'repo-details');
   const commit = state.activity.find(item => item.repo === repo.name);
   detail.append(el('p', '', commit ? 'commit: ' + commit.title :
@@ -58,7 +68,7 @@ function repoCard(repo) {
   detail.append(actions);
   card.append(summary, detail);
   card.addEventListener('toggle', () => {
-    inspect.textContent = card.open ? '[-]' : '[+]';
+    inspect.textContent = card.open ? '−' : '+';
     if (card.open) history.replaceState(null, '', '#' + encodeURIComponent(card.id));
     else if (location.hash === '#' + encodeURIComponent(card.id)) history.replaceState(null, '', '#projects');
   });
