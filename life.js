@@ -107,6 +107,7 @@ export function startLife() {
     frame = 0;
     toggle.textContent = paused ? 'resume' : 'pause';
     toggle.setAttribute('aria-pressed', String(paused));
+    document.dispatchEvent(new CustomEvent('life:motion', { detail: { paused } }));
     document.querySelector('#field-state').textContent = paused ? 'paused' : 'running';
     if (!paused && !document.hidden) frame = requestAnimationFrame(loop);
     draw();
